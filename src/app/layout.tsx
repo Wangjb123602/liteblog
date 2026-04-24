@@ -5,6 +5,7 @@ import { description, title } from './layout.config';
 import './global.css';
 import 'katex/dist/katex.css';
 import { RootProvider } from 'fumadocs-ui/provider/next';
+import SearchDialog from '@/components/search-dialog';
 
 const geist = Geist({
   subsets: ['latin'],
@@ -39,9 +40,12 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         >
           {/* 顶部导航栏 - 降低 z-index，移除 fixed/sticky 冲突 */}
           <header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container mx-auto px-4 h-14 flex items-center">
+            <div className="container mx-auto px-4 h-14 flex items-center justify-between">
               {/* Logo */}
               <a href="/" className="font-bold text-lg">{title}</a>
+              
+              {/* 搜索按钮 */}
+              <SearchDialog />
             </div>
           </header>
           
