@@ -1,0 +1,3 @@
+{
+  "/api/rss.xml/route": "app/api/rss.xml/route.js"
+}

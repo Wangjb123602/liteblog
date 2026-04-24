@@ -1,0 +1,14 @@
+{
+  "/(home)/list/[[...slug]]/page": "app/(home)/list/[[...slug]]/page.js",
+  "/(home)/page": "app/(home)/page.js",
+  "/(home)/tags/[...slug]/page": "app/(home)/tags/[...slug]/page.js",
+  "/(home)/tags/page": "app/(home)/tags/page.js",
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/og/route": "app-edge-has-no-entrypoint",
+  "/api/rss.xml/route": "app/api/rss.xml/route.js",
+  "/api/search/route": "app/api/search/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/posts/[slug]/page": "app/posts/[slug]/page.js",
+  "/robots.txt/route": "app/robots.txt/route.js"
+}

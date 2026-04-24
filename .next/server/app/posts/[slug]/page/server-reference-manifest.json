@@ -1,0 +1,20 @@
+{
+  "node": {
+    "7f305ff3bd2132a4461d4925ab40594f4f0fa00a6f": {
+      "workers": {
+        "app/posts/[slug]/page": {
+          "moduleId": 33754,
+          "async": false,
+          "exportedName": "fetchOGMetadata",
+          "filename": "src/actions/fetch-og-metadata.ts"
+        }
+      },
+      "layer": {
+        "app/posts/[slug]/page": "rsc"
+      },
+      "exportedName": "fetchOGMetadata",
+      "filename": "src/actions/fetch-og-metadata.ts"
+    }
+  },
+  "edge": {}
+}

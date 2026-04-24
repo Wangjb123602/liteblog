@@ -1,0 +1,3 @@
+module.exports=[35211,a=>{"use strict";var b=a.i(7997),c=a.i(33166),d=a.i(46417),e=a.i(49528),f=a.i(37395);let g={openGraph:{images:"/api/og",url:"/",siteName:f.title},alternates:{canonical:"/",types:{"application/rss+xml":"/api/rss.xml"}}};a.s(["default",0,({children:a})=>(0,b.jsx)(c.HomeLayout,{...f.baseOptions,links:f.linkItems,nav:{component:(0,b.jsx)(e.Header,{finalLinks:(0,d.getLinks)(f.linkItems,f.baseOptions.githubUrl),...f.baseOptions})},children:(0,b.jsx)("main",{className:"mx-4 my-12 lg:mx-auto lg:w-[992px]",children:a})}),"metadata",0,g])}];
+
+//# sourceMappingURL=src_app_%28home%29_layout_tsx_2f2e4e76._.js.map

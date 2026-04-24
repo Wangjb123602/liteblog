@@ -1,0 +1,17 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/(home)/layout,_N_T_/(home)/list/layout,_N_T_/(home)/list/[[...slug]]/layout,_N_T_/(home)/list/[[...slug]]/page,_N_T_/list/3"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/!KGhvbWUp/list/$oc$slug/__PAGE__",
+    "/!KGhvbWUp/list/$oc$slug",
+    "/!KGhvbWUp/list",
+    "/!KGhvbWUp",
+    "/_index",
+    "/_head"
+  ]
+}

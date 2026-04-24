@@ -1,0 +1,14 @@
+{
+  "/(home)/list/[[...slug]]/page": "/list/[[...slug]]",
+  "/(home)/page": "/",
+  "/(home)/tags/[...slug]/page": "/tags/[...slug]",
+  "/(home)/tags/page": "/tags",
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/og/route": "/api/og",
+  "/api/rss.xml/route": "/api/rss.xml",
+  "/api/search/route": "/api/search",
+  "/favicon.ico/route": "/favicon.ico",
+  "/posts/[slug]/page": "/posts/[slug]",
+  "/robots.txt/route": "/robots.txt"
+}

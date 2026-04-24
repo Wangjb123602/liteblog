@@ -1,0 +1,54 @@
+// source.config.ts
+import {
+  rehypeCodeDefaultOptions,
+  remarkImage
+} from "fumadocs-core/mdx-plugins";
+import {
+  defineCollections,
+  defineConfig,
+  frontmatterSchema
+} from "fumadocs-mdx/config";
+import { transformerTwoslash } from "fumadocs-twoslash";
+import rehypeKatex from "rehype-katex";
+import remarkMath from "remark-math";
+import { remarkMdxMermaid } from "fumadocs-core/mdx-plugins";
+import { z } from "zod";
+var blog = defineCollections({
+  type: "doc",
+  dir: "content",
+  schema: frontmatterSchema.extend({
+    date: z.string().or(z.date()).transform((value, context) => {
+      try {
+        return new Date(value);
+      } catch {
+        context.issues.push({
+          code: "custom",
+          message: "The value could not be transformed to Date type.",
+          input: value
+        });
+        return z.NEVER;
+      }
+    }),
+    tags: z.array(z.string()).optional()
+  })
+});
+var source_config_default = defineConfig({
+  lastModifiedTime: "git",
+  mdxOptions: {
+    rehypeCodeOptions: {
+      inline: "tailing-curly-colon",
+      themes: {
+        light: "min-light",
+        dark: "min-dark"
+      },
+      transformers: [...rehypeCodeDefaultOptions.transformers ?? [], transformerTwoslash()],
+      langs: ["js", "jsx", "ts", "tsx"]
+    },
+    remarkPlugins: [remarkImage, remarkMath, remarkMdxMermaid],
+    rehypePlugins: (v) => [rehypeKatex, ...v]
+  }
+});
+export {
+  blog,
+  source_config_default as default
+};

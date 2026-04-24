@@ -1,0 +1,2451 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://wangjb.appinn.me/</id>
+    <title>王浚博的博客</title>
+    <updated>2026-04-24T23:23:15.055Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <author>
+        <name>Silas</name>
+        <uri>https://wangjb.appinn.me</uri>
+    </author>
+    <link rel="alternate" href="https://wangjb.appinn.me/"/>
+    <link rel="self" href="https://wangjb.appinn.me/api/rss.xml"/>
+    <subtitle>有什么好玩————科技划界，拒绝平庸</subtitle>
+    <icon>https://wangjb.appinn.me/favicon.ico</icon>
+    <rights>wangjb.appinn.me</rights>
+    <entry>
+        <title type="html"><![CDATA[2023 Web Components 现状]]></title>
+        <id>https://wangjb.appinn.me/posts/2023_state_of_web_component</id>
+        <link href="https://wangjb.appinn.me/posts/2023_state_of_web_component"/>
+        <updated>2023-04-21T12:00:00.000Z</updated>
+        <summary type="html"><![CDATA[2023 年 Web Components 生态报告：通过 Microsoft、Salesforce 等实战案例展示其成熟度，并详细梳理了 Shadow DOM 增强、Element Internals、声明式 Shadow DOM 以及 CSS 模块脚本等核心 API 的现状与未来提案。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=2023+Web+Components+%E7%8E%B0%E7%8A%B6&description=2023+%E5%B9%B4+Web+Components+%E7%94%9F%E6%80%81%E6%8A%A5%E5%91%8A%EF%BC%9A%E9%80%9A%E8%BF%87+Microsoft%E3%80%81Salesforce+%E7%AD%89%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B%E5%B1%95%E7%A4%BA%E5%85%B6%E6%88%90%E7%86%9F%E5%BA%A6%EF%BC%8C%E5%B9%B6%E8%AF%A6%E7%BB%86%E6%A2%B3%E7%90%86%E4%BA%86+Shadow+DOM+%E5%A2%9E%E5%BC%BA%E3%80%81Element+Internals%E3%80%81%E5%A3%B0%E6%98%8E%E5%BC%8F+Shadow+DOM+%E4%BB%A5%E5%8F%8A+CSS+%E6%A8%A1%E5%9D%97%E8%84%9A%E6%9C%AC%E7%AD%89%E6%A0%B8%E5%BF%83+API+%E7%9A%84%E7%8E%B0%E7%8A%B6%E4%B8%8E%E6%9C%AA%E6%9D%A5%E6%8F%90%E6%A1%88%E3%80%82" alt="2023 Web Components 现状"></p><p>最近，我写了一篇关于<a href="https://medium.com/@eisenbergeffect/hello-web-components-795ed1bd108e">如何构建你的第一个 Web 组件</a>的文章，以及一些关于<a href="https://medium.com/@eisenbergeffect/about-web-components-7b2a3ed67a78">基本的 v1 Web 组件规范的历史和解释</a>。但自 2020 年 v1 获得完全支持以来，Web Components 的世界发生了更多的变化。未来还有更多的计划。让我们看一些使用当前标准构建的值得关注的例子，以及调查一些将在 2023 年及以后推出的新的 Web Components 标准工作<a href="%5B%E5%8E%9F%E6%96%87%E9%93%BE%E6%8E%A5%5D(https://eisenbergeffect.medium.com/2023-state-of-web-components-c8feb21d4f16)">^1</a>。</p>
+<h2>Web Components 应用实例</h2>
+<p>随着所有浏览器都支持 v1 Web Components，<a href="https://arewebcomponentsathingyet.com/">许多公司</a>已经采用并基于这些新标准构建了重要的业务。以下是我认为值得关注的一些例子。</p>
+<h3>YouTube</h3>
+<p><img src="https://blog-assets.shenn.xyz/2023_Web_Component_youtube.webp" alt="youtube"></p>
+<p>YouTube 是最早采用 Web Components 技术的应用之一，多年来一直使用这种技术构建其界面。检查源代码，你会看到各种自定义元素，从 <code>ytd-video-preview</code> 到 <code>iron-ally-announcer</code>。</p>
+<h3>Photoshop</h3>
+<p><img src="https://blog-assets.shenn.xyz/2023_Web_Component_photoshop.webp" alt="photoshop"></p>
+<p>是的，Adobe 使用 <a href="https://lit.dev/">Lit</a> 将 Photoshop 带到了浏览器中。它现在还处于 beta 版本，如果你是 Adobe 的订阅用户，可以自行尝试。整个应用程序中有很多自定义元素，从构成应用程序根的 <code>psw-app</code>，到像 <code>psw-layers-panel</code> 这样的 shell 元素，再到像 <code>sp-action-button</code> 这样的 UI 组件。</p>
+<h3>MSN, Edge, Bing, VS Code, and More at Microsoft</h3>
+<p><img src="https://blog-assets.shenn.xyz/2023_Web_Component_microsoft.webp" alt="fast"></p>
+<p>几年前，微软使用基于 <a href="https://www.fast.design/">FAST</a> 的 Web Components 重构了 MSN。这将性能提高了 30% 到 50%，比之前使用 React 构建的版本性能更好。</p>
+<p>基于 OpenAI 的 New Bing 也是使用 <a href="https://www.fast.design/">FAST Web Components</a> 构建的，如下面的屏幕截图所示，最近由其中一位开发人员分享。</p>
+<p><img src="https://blog-assets.shenn.xyz/2023_Web_Component_bing.webp" alt="bing"></p>
+<p>甚至用于扩展 VS Code 新功能的 Webview UI 工具包，也是使用 <a href="https://www.fast.design/">FAST Web Components</a> 构建的。</p>
+<p><img src="https://blog-assets.shenn.xyz/2023_Web_Component_vscode.webp" alt="vs code"></p>
+<p>在过去三年中，微软大约有 1,500 个团队/项目采用了 <a href="https://www.fast.design/">FAST Web Components</a>。</p>
+<h3>Salesforce</h3>
+<p><img src="https://blog-assets.shenn.xyz/2023_Web_Component_salesforce.webp" alt="salesforce"></p>
+<p>作为客户关系管理（CRM）、销售和营销自动化平台行业中最大的品牌之一，Salesforce 多年来一直在基于 <a href="https://developer.salesforce.com/docs/component-library/documentation/en/lwc">Lightning Web Components</a> 进行开发。</p>
+<h3>SpaceX</h3>
+<p><img src="https://blog-assets.shenn.xyz/2023_Web_Component_spacex.webp" alt="spacex"></p>
+<p>如今，Web Components 甚至在太空中也得到了应用。SpaceX 的机组人员显示屏正在运行 Chromium，广泛使用 Web Components。</p>
+<h2>标准现状</h2>
+<p>Web 标准不断发展，其中包括 Web Components。自从 v1 版本发布到所有主流浏览器以来的三年中，Web Components 下的功能数量几乎翻了一倍。以下是各种已发布、正在进行和计划中的 Web Components 相关标准的图示。</p>
+<p><img src="https://blog-assets.shenn.xyz/2023_Web_Component_standard.webp" alt="status"></p>
+<p>让我们逐一查看图示中按照功能划分的六个高级类别中的每一项：组合和作用域、平台互操作性、渲染和性能、样式、包和分发、API 范式。</p>
+<h3>组合和作用域</h3>
+<p><img src="https://blog-assets.shenn.xyz/2023_Web_Component_composition_scope.webp" alt="scope"></p>
+<p>Web 组件的作用域/封装特性对于传统编程中的信息隐藏、维护、代码库可扩展性等方面同样非常重要。但是，当涉及到 Web Components 时，它们还为 HTML 和 CSS 运行时提供了额外的元数据，可以用来优化绘制和布局。</p>
+<p><strong>Shadow DOM</strong>
+Shadow DOM 是 HTML 中用于作用域、封装和组合 DOM 及相关样式的基本机制。它是一个多方面的特性，具有许多不断扩展的能力。</p>
+<ul>
+<li><p><strong>命名插槽分配（全面支持）</strong>—— 原始的 v1 Shadow DOM 规范提供了一种完全声明式的机制，用于在 Shadow DOM 中使用<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot">命名的 <code>&lt;slot&gt;</code>元素</a>来定义元素组合的占位符。开发者只需在宿主元素的任何子元素上放置一个 <code>slot</code> 属性，浏览器就会自动『插入』该元素的呈现输出到插槽的位置。</p>
+</li>
+<li><p><strong>开放和封闭模式（全面支持）</strong>—— v1 Shadow DOM 规范中的 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow">attachShadow() API</a> 的 <code>mode</code> 选项是其中一部分。它允许组件开发者选择其首选的封装模式。<code>open</code> 模式允许从宿主元素外部访问 <code>shadowRoot</code>，而 <code>closed</code> 模式则禁止访问。</p>
+</li>
+<li><p><strong>事件重新定向（全面支持）</strong>—— 当在 Shadow DOM 内部的元素上触发事件时，这些事件会被『重新定向』，以便它们看起来来自宿主 Shadow DOM。这个 v1 Shadow DOM 规范的能力是正确封装内部结构的重要部分。</p>
+</li>
+<li><p><strong>手动插槽分配（全面支持）</strong>—— <code>slot</code> 元素上的新的 <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLSlotElement/assign">assign API</a> 扩展了 v1 的原始插槽分配功能，除了之前的声明性式插槽机制外，还提供了一种命令式 API。</p>
+</li>
+<li><p><strong>焦点委托（全面支持）</strong>—— 这个在 v1 之后的特性使 Shadow DOM 可以告诉浏览器，当其宿主元素获得焦点时，<a href="https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/delegatesFocus">它应该将焦点委托</a>给 Shadow DOM 中的特定元素。默认情况下，第一个可聚焦的元素被选中，但可以使用 <code>autofocus</code> 属性覆盖该行为。</p>
+</li>
+<li><p><strong>Cross-root ARIA（接近共识）</strong>—— 即将到来的特性，与社区和浏览器厂商接近达成共识，<a href="https://w3c.github.io/webcomponents-cg/2022.html#cross-root-aria">Cross-root ARIA</a> 将极大简化在 Shadow DOM 外部与 Shadow DOM 内部的 ARIA 关键元素相关联的操作。例如，将 Shadow DOM 外部的 <code>label</code> 元素与 Shadow DOM 内部的 <code>input</code> 元素关联起来。这些类型的 ARIA 场景今天已经有解决方案，但并不是容易实现的。Cross-root ARIA 将大大改善这种情况。</p>
+</li>
+<li><p><strong>在 Shadow CSS 中使用自定义属性（共识）</strong>—— 如今，一些浏览器可以<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@property">使用 @property 语法</a>来自定义 CSS 属性。但是，目前在 Shadow DOM 中尚不起作用。CSS 对象模型始终可以从自定义元素代码中来全局定义这些属性，但在 Shadow DOM 中以声明形式提供此功能是一个常识性的改进。这已达成共识，因此希望我们很快就能看到这个功能。<a href="https://caniuse.com/?search=%40property">随着浏览器更普遍地支持新的 CSS 语法</a>。</p>
+</li>
+</ul>
+<p><strong>作用域元素注册表（共识）</strong>
+在自定义元素的 v1 规范中，所有元素都通过 <code>customElements</code> 全局对象在全局自定义元素注册表中注册。这个新的补充功能使得能够实例化非全局注册表并在其中注册自定义元素。</p>
+<pre><code class="language-javascript">const myRegistry = new CustomElementRegistry();  
+myRegistry.define(&quot;my-element&quot;, MyElement);
+</code></pre>
+<p>这个注册表中的元素仅定义为该注册表所分配的 Shadow DOM。这极大地改进了浏览器中的作用域，使得可以按照需要为每个 shadow root 定义元素。当它被应用到浏览器中时，这将会是一个巨大的进步，为新的架构可能性打开了大门。目前，社区和厂商之间已经达成共识，Chromium 正在开发第一个实现。</p>
+<h3>平台互操作性</h3>
+<p><img src="https://blog-assets.shenn.xyz/2023_Web_Component_platform.webp" alt=""></p>
+<p>Web Components 最重要的方面之一是它们如何在组件和平台之间实现互操作性。让我们看一些当前和未来的特性。</p>
+<p><strong>自定义元素</strong></p>
+<ul>
+<li><p><strong>自治自定义元素（全面支持）——</strong> Web Components v1 的这个核心功能通过向 <code>customElements</code> 全局对象注册一个类来<a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements">定义继承自 <code>HTMLElement</code> 的自定义元素</a>。基本的生命周期回调和观察属性也是规范的一部分。</p>
+</li>
+<li><p><strong>自定义内置元素（已拒绝）——</strong> 最初，有一个提案允许从内置元素（例如 <code>HTMLParagraphElement</code>）继承，但 WebKit 实现者发现了几个技术问题，因此已经拒绝了这个规范。它很可能在将来被删除，所以应该避免使用。请参见下面的『自定义属性』，了解可能更好的替代方案。</p>
+</li>
+</ul>
+<p><strong>Element Internals</strong></p>
+<p>一个 v1 之后的新 API，<code>ElementInternals</code>，使得自定义元素能够更深入地与现有的 DOM 子系统进行<a href="https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals">平台级集成</a>。</p>
+<ul>
+<li><p><strong>Shadow Root 访问（全面支持）</strong> —— 这个简单的功能添加使组件开发者可以检索一个 <code>closed</code> 模式元素的 Shadow Root 实例。如果没有这个功能，具有 <code>closed</code> 模式声明式 Shadow DOM 的元素将无法在运行时访问其根节点。</p>
+</li>
+<li><p><strong>与表单关联的自定义元素（全面支持）</strong> —— 这个重要的新功能使得自定义元素能够<a href="https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals/form">完全参与表单</a>，包括表单验证、提交和重置。</p>
+</li>
+<li><p><strong>默认可访问性角色、状态和属性（大多数已支持）</strong> —— <a href="https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals#instance_properties_included_from_aria">这个新的 API 集合</a> 使得可以通过直接在内部与平台进行通信来设置自定义元素的默认可访问性特性，而不是通过可能被用户无意中删除的宿主元素上的外部属性。目前，<em>除 Firefox 外的所有主要浏览器都支持这个新的 API</em>，对于 Firefox，则提供了一个 polyfill。由于 Firefox 已经实现了 <code>ElementInternals</code> 其他部分的 API，如果他们在不久的将来没有发布这个功能，我会感到惊讶。</p>
+</li>
+</ul>
+<p><strong>组合选择（共识/无规范）</strong>
+这个改进提出了一个新的 <code>getComposedRange()</code> API，用于 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Selection">Selection 对象</a>，它使得范围的起始和结束可以跨越多个 Shadow Root。它还将提升浏览器在处理这些情况时的一致性。对于 <a href="https://w3c.github.io/webcomponents-cg/2022.html#initial-api-summary-quick-api-proposal-0">这个 API 草案</a>，有普遍的共识，但在浏览器可以进行实现之前，仍需要一个完整的规范。在 Web Component 的正常开发过程中，你不太可能遇到这种情况。它主要涉及到富文本编辑器的实现。</p>
+<p><strong>自定义属性（已确定）</strong>
+虽然这个功能不一定是 Web Components 的一部分，但它与 Web Components 旨在服务的场景有很高的重叠。这个草案提议启用可重用行为的创建，这些行为可以附加到任何 HTML 元素，遵循类似于 Web Components 的模式。例如，想象一下你想将 Material Design 水波纹效果应用到任何 HTML 元素上，那么这样做会不会很好呢？</p>
+<pre><code class="language-javascript">&lt;button material-ripple&gt;Click Me&lt;/button&gt;
+</code></pre>
+<p>在我为 TPAC 2022 准备的草案提案中，我演示了这个功能的编程模型可能是什么样的：</p>
+<pre><code class="language-javascript">class MaterialRipple extends Attr {
+  // ownerElement inherited from Attr
+  // name inherited from Attr
+  // value inherited from Attr
+  // ...
+
+  connectedCallback () {
+    // called when the ownerElement is connected to the DOM
+    // or when the attribute is added to an already connected owner
+  }
+
+  disconnectedCallback () {
+    // called when the ownerElement is disconnected from the DOM
+    // or when the attribute is removed from a connected owner
+  }
+
+  attributeChangedCallback() {
+    // called when the value property of this attribute changes
+  }
+}
+
+customAttributes.define(&quot;material-ripple&quot;, MaterialRipple);
+</code></pre>
+<p>你会注意到，这个模式和生命周期与 Web Components 是一致的。这也将为被拒绝的可定制内置自定义元素提案中的 <code>is</code> 属性提供更好、更健壮的替代方案。</p>
+<h3>渲染和性能</h3>
+<p><img src="https://blog-assets.shenn.xyz/2023_Web_Component_rendering.webp" alt=""></p>
+<p>渲染和性能对于 Web Components 来说非常关键。虽然基本功能已经就位，但这仍然是一个活跃的探索、讨论和未来创新的领域。</p>
+<p><strong>HTML Template 元素（全面支持）</strong></p>
+<p><code>HTMLTemplateElement</code>及其定义惰性 HTML 内容的能力是 v1 Web 组件功能的关键部分。在引入该元素之前，没有办法声明不会被浏览器激活的 HTML，因此很难创建需要在需求时重复渲染相同 HTML 的组件。</p>
+<p><strong>声明式 Shadow DOM（大多数支持）</strong>
+Shadow DOM 的 v1 规范仅允许通过 <code>attachShadow()</code> JavaScript API 创建 Shadow Root。<a href="https://developer.chrome.com/articles/declarative-shadow-dom/">这个 Shadow DOM 的新增增强功能</a>允许在 HTML 中完全声明 Shadow DOM 内容，无需使用 JavaScript，为服务器框架提供了有趣的可能性。</p>
+<pre><code class="language-javascript">&lt;host-element&gt;  
+  &lt;template shadowrootmode=&quot;open&quot;&gt;  
+  &lt;slot&gt;&lt;/slot&gt;  
+  &lt;/template&gt;  
+  &lt;h2&gt;Light content&lt;/h2&gt;&gt;  
+&lt;/host-element&gt;
+</code></pre>
+<p>这个规范重用了 <code>template</code> 元素。不要被这个搞混了。它不是一个模板，它是由 HTML 解析器流入 Shadow Root 的活动 DOM。</p>
+<p><em>当前除了 Firefox 之外，所有浏览器都支持声明式 Shadow DOM。</em> 如果需要，该功能可以通过几行 JavaScript 代码进行 polyfill。</p>
+<p><strong>子节点更改回调函数（提议）</strong>
+Web Components 在自定义元素的 v1 规范中有一个明确定义的生命周期，但这并不意味着我们不能在未来扩展这个生命周期。其中一个常见的对于开发者的挑战是使 Web Component 能够对子节点的添加或删除做出响应。虽然现在可以使用 <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLSlotElement/slotchange_event">slotchange事件</a> 和 <a href="https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver">MutationObserver</a> 实现这一点，但是如果有一个像 <code>childrenChangedCallback()</code> 这样的生命周期回调函数，可以提供更好的性能、简化和与 HTML 解析器本身的集成，那就更好了。目前有一个<a href="https://w3c.github.io/webcomponents-cg/2022.html#children-changed-callback">草案提议</a>，并且实现者也表现出了兴趣。需要一份完整的提案来推动这个功能进入下一个阶段。</p>
+<p><strong>模板实例化</strong>
+虽然 HTML 有模板，但它还没有一种机制来实例化与数据连接的模板，并在其相关数据更改时更新它们。这个『模板实例化』的领域有几个独立有价值的部分。</p>
+<ul>
+<li><strong>DOM 部件（提议）</strong> - <a href="https://w3c.github.io/webcomponents-cg/2022.html#initial-api-summary-quick-api-proposal-10">这个提案</a> 将提供一种标准机制，在 DOM 树的特定位置插入或替换内容。你可以把它看作是一种低级别的启用器，帮助创建更高效的模板引擎和批量更新现有的 Web Component 库和 JavaScript 框架。它不提供响应性解决方案或模板语法，只提供定位和更新 DOM 部分的低级别标准基础设施。</li>
+<li><strong>模板语法（已确定）</strong> - 一旦定位和批量更新的低级别基础设施就位并被现有库成功使用，那么关于语法的大辩论就会开始。模板语法是一个非常有争议的问题，但我们已经认识到 HTML 应该有一个基本的语言来处理这个问题，即使它只是为其他库提供编译目标。</li>
+<li><strong>响应性（已确定）</strong> - DOM 部件提供批量更新 DOM 的标准机制。模板语法提供声明式机制来创建 DOM 部分。剩下的是确定何时应执行 DOM 部件更新的机制。这就是响应性的作用，以完成整个图景。这是另一个有争议的问题，但已经有一些先例，例如通过 Web Components 的 <code>attributeChangedCallback()</code>。这个主题需要更多的探索。</li>
+</ul>
+<p>模板实例化工作类别被分解为上述三个子特性，旨在先解决某些较少有争议的问题，并为现有库和框架提供路径，以利用不那么主观的、改进性能的功能，避免在社区中引起过多争议。</p>
+<h3>样式</h3>
+<p><img src="https://blog-assets.shenn.xyz/2023_Web_Component_styling.webp" alt=""></p>
+<p>虽然 Shadow DOM 提供了样式的封装，但有许多 CSS 特性直接与 Web Components 相关，并且在日常使用中非常重要。</p>
+<p><strong>使用</strong>
+有几项当前和未来的标准与 Web Components 如何使用样式来创建 Shadow DOM 的呈现方式有关。虽然一直以来都可以在 Shadow DOM 中创建样式元素，但新标准提供了更好的可读性和性能优势。</p>
+<ul>
+<li><strong>可构建样式表（全面支持）</strong> — 你知道在这个标准之前实际上无法创建 <code>CSSStyleSheet</code> 实例吗？这个标准修复了这个问题，现在您可以编写代码 <code>new CSSStyleSheet()</code>。这种能力使得在 Web Components 中更动态地创建和使用样式成为可能，包括在组件之间共享样式表。</li>
+<li><strong>采用样式表（全面支持）</strong> — 针对给定的 <code>CSSStyleSheet</code> 实例，如何将其与特定的 Shadow Root 或全局 document 关联起来？<a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/adoptedStyleSheets">这个新标准</a> 在 <code>document</code> 和所有 Shadow Root 实例中添加了一个 <code>adoptedStyleSheets</code> 数组。只需将样式表推入该数组中，就可以开始使用了。</li>
+<li><strong>CSS 模块脚本（Chromium）</strong> — 可构建样式表和采用样式表本身提供了创建、共享和关联文档表的原始机制，但仍需要在 JavaScript 中编写 CSS 代码。<a href="https://w3c.github.io/webcomponents-cg/2022.html#css-module-scripts">CSS 模块脚本标准</a> 允许使用 JavaScript 模块导入<code>.css</code> 文件，从而平台会自动创建一个 <code>CSSStyleSheet</code> 实例，无需在 CSS 运行时和 JavaScript 运行时之间来回切换。</li>
+<li><strong>声明式 CSS 模块（已确定）</strong> — 随着声明式 Shadow DOM 和采用样式表的出现，已经创建了几个临时提议，以便声明 CSS 模块并将其与声明式 Shadow DOM 关联。这方面需要更多的探索，但这是 HTML 和 CSS 未来的一个令人兴奋的可能性。</li>
+</ul>
+<p><strong>呈现</strong>
+主要来说，CSS 关注的是呈现方面的问题。有一些标准扩展了 Web Components 的样式设置的可能性。</p>
+<p>不仅仅是 Web Components，对于创建组件系统来说，<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties">自定义 CSS 属性</a> 是一个非常重要的规范，它能够创建本地 CSS 变量，并可以在 shadow roots 中使用。</p>
+<ul>
+<li><strong>CSS Shadow Parts（全面支持）</strong> — <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/::part">CSS 部分</a> 允许在 Shadow DOM 中声明元素作为『部分』，可以使用外部选择器对其进行样式设置。这是通过 <code>part</code> 属性和 <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/exportparts">the exportparts 属性</a> 实现的，用于嵌套场景。</li>
+<li><strong>CSS 自定义状态（Chromium）</strong> — 原生元素可以具有自定义状态，在 CSS 选择器中可用。例如，复选框的『已选中』和『未选中』状态。<a href="https://developer.mozilla.org/en-US/docs/Web/API/CustomStateSet">这个新功能</a> 允许 Web Components 定义自己的状态。已经达成共识，Chromium 已经发布了第一个实现，可以通过 <code>ElementInternals</code> 访问。在等待其他浏览器跟进时，可以使用 polyfill 进行支持。</li>
+<li><strong>CSS 主题（提议）</strong> — 尽管可以通过仔细使用 CSS 自定义属性和 CSS Shadow Parts 来实现丰富的主题化，但可以通过明确地<a href="https://w3c.github.io/webcomponents-cg/2022.html#theming">将主题的概念引入 CSS</a>来简化和改进这一过程。</li>
+<li><strong>开放式 Shadow Root 样式（已确定）</strong> — 尽管可以使用可构建样式表和采用样式表使任何全局 CSS 在 Shadow Root 中共享，但对于普通 Web 开发人员来说，这可能不是一个直观的过程。有一些探索机制的方法，明确选择允许外部 CSS 进入某些 shadow roots。</li>
+</ul>
+<h3>打包和分发</h3>
+<p><img src="https://blog-assets.shenn.xyz/2023_Web_Component_package.webp" alt=""></p>
+<p>到目前为止，我们主要谈论了与 Web Components 实现相关的标准。但同样重要的是考虑组件如何打包和加载。</p>
+<p><strong>自定义元素懒加载（提议）</strong>
+现在，我们可以使用全局的 <code>customElements</code> 注册表定义组件，很快还可以使用自定义注册表。但是，在这两种情况下，在定义组件之前，组件的实现必须已经被加载。使用<a href="https://w3c.github.io/webcomponents-cg/2022.html#lazy-custom-element-definitions">自定义元素懒加载</a>，开发人员将能够告诉平台有关元素的信息，但是可以延迟加载它，直到元素首次出现在 document 中时才加载。它可能会像这样工作：</p>
+<pre><code class="language-javascript">customElements.defineLazy(  
+  &quot;my-element&quot;,   
+  async () =\&gt; (await import(&quot;my-element.js&quot;)).default  
+);
+</code></pre>
+<p>这个规范似乎被大多数人认为是一种很好的东西，尤其是对于某些架构来说。然而，该提议的细节仍在争论中。</p>
+<p><strong>HTML 模块脚本（已确定）</strong></p>
+<p>HTML 模块脚本是 CSS 模块脚本的 HTML 等效物。通过 <a href="https://w3c.github.io/webcomponents-cg/2022.html#html-modules">HTML 模块脚本提案</a>，模板（和其他 HTML 片段）将通过 JS 模块系统直接可导入。目前只有一个草案提案，还需要进一步讨论许多细节，但这被认为是一个重要的长期增强功能，特别是考虑到未来可能存在只有单个 HTML 文件的 Web Components 的情况。</p>
+<h3>API 范式</h3>
+<p><img src="https://blog-assets.shenn.xyz/2023_Web_Component_api.webp" alt=""></p>
+<p>最后一个标准类别与我之前讨论的所有内容有些不同。这些标准涉及 Web Components 的基本编程范式。Web Components v1 主要是一种命令式的 JavaScript 编程模型。有一些值得注意的例外，比如声明式的 slot 分配。但基本上，它完全是命令式的。自 v1 以来，我们一直在努力引入越来越多的声明式特性。其中一个很好的例子是声明式 Shadow DOM。总的来说，最好为所有场景提供声明式和命令式的 API。但最终目标是拥有某种完全声明式定义的 Web Components，以便服务器可以向浏览器发送元素定义，在 noscript 上下文中可以完全工作。我们还有一段路要走，但当我们到达那里时，它将从根本上改变客户端和服务器开发。</p>
+<h2>下一步是什么</h2>
+<p>标准的工作永远在进行中。事实上，从今天开始，W3C Web 组件社区组正在召开其 2023 年春季面对面活动。就像 TPAC 一样，这是一个机会，供库作者、组件创建者、浏览器厂商等聚集在一起，并花费专门的时间来解决仍需要共识或存在开放问题的规范的细节。我期待在后续的博客文章中向大家更新活动结果。请关注/订阅以确保您获得更新 😄</p>
+<h2>总结</h2>
+<p>我希望本次的 Web Components 标准之旅对你来说是有意义的。你看到我们已经走了多远，未来还有什么等待我们，这很有趣。随着 v1 版本的发布，过去几年中已经发布的功能翻了一番，以及即将到来令人兴奋的新功能，现在是成为 Web 开发人员的好时机。</p>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[再探js执行机制]]></title>
+        <id>https://wangjb.appinn.me/posts/EventLoop</id>
+        <link href="https://wangjb.appinn.me/posts/EventLoop"/>
+        <updated>2020-02-24T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[JS 执行机制深度解析：基于 Event Loop 模型，通过代码推演详细讲解了宏任务（Macro-task）与微任务（Micro-task）的执行差异。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=%E5%86%8D%E6%8E%A2js%E6%89%A7%E8%A1%8C%E6%9C%BA%E5%88%B6&description=JS+%E6%89%A7%E8%A1%8C%E6%9C%BA%E5%88%B6%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%EF%BC%9A%E5%9F%BA%E4%BA%8E+Event+Loop+%E6%A8%A1%E5%9E%8B%EF%BC%8C%E9%80%9A%E8%BF%87%E4%BB%A3%E7%A0%81%E6%8E%A8%E6%BC%94%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3%E4%BA%86%E5%AE%8F%E4%BB%BB%E5%8A%A1%EF%BC%88Macro-task%EF%BC%89%E4%B8%8E%E5%BE%AE%E4%BB%BB%E5%8A%A1%EF%BC%88Micro-task%EF%BC%89%E7%9A%84%E6%89%A7%E8%A1%8C%E5%B7%AE%E5%BC%82%E3%80%82" alt="再探js执行机制"></p><h2>写在前面</h2>
+<p>入行前端已两年有余了。之前我在一篇文章中写了——要明白前端领域的变与不变。现在和两年前一样，各种框架层出不穷，让人眼花缭乱。很多时候我也在问自己『这个还需要学吗』。这样很容易让我产生焦虑感。而且在面对新事物时，我经常会感到手足无措。归根结底还是基础知识不扎实，内功不够。这也是我写这篇文章的目的——提升内功，更好的理解『变与不变』。</p>
+<h2>要开始了</h2>
+<p>先从这段代码开始探索之旅吧</p>
+<pre><code class="language-js">console.log(&#39;开始了&#39;)
+
+// setTimeout1
+setTimeout(function () {
+  console.log(&#39;timeout1&#39;)
+  // promise1
+  new Promise(function (resolve) {
+    console.log(&#39;timeout1_promise&#39;)
+    resolve()
+  }).then(function () {
+    console.log(&#39;timeout1_then&#39;)
+  })
+}, 2000)
+
+for (var i = 1; i &lt;= 5; i++) {
+  // setTimeout2
+  setTimeout(function () {
+    console.log(i)
+  }, i * 1000)
+  console.log(i)
+}
+
+// promise2
+new Promise(function (resolve) {
+  console.log(&#39;promise1&#39;)
+  resolve()
+}).then(function () {
+  console.log(&#39;then1&#39;)
+})
+
+// setTimeout3
+setTimeout(function () {
+  console.log(&#39;timeout2&#39;)
+  // promise3
+  new Promise(function (resolve) {
+    console.log(&#39;timeout2_promise&#39;)
+    resolve()
+  }).then(function () {
+    console.log(&#39;timeout2_then&#39;)
+  })
+}, 1000)
+
+// promise4
+new Promise(function (resolve) {
+  console.log(&#39;promise2&#39;)
+  resolve()
+}).then(function () {
+  console.log(&#39;then2&#39;)
+})
+</code></pre>
+<p>开始之前，喜欢思考问题的小伙伴可能会有两个问题。javascript为什么被设计为单线程语言，为什么又会有同步任务和异步任务的区分。这两个问题，在这里我就不细述了。感兴趣的同学请看阮老师的<a href="http://www.ruanyifeng.com/blog/2014/10/event-loop.html">这篇文章</a>。
+现在我们来看一下js大致是怎么执行的。</p>
+<p>到底哪些是宏任务，哪些是微任务呢。大体上这样区分。</p>
+<p>宏任务（macro-task)</p>
+<ul>
+<li>script(整体JavaScript代码)</li>
+<li>setTimeout()</li>
+<li>setInterval()</li>
+<li>setImmediate()</li>
+<li>I/O</li>
+<li>UI render</li>
+</ul>
+<p>微任务（micro-task)</p>
+<ul>
+<li>promise</li>
+<li>async/await(同☝)</li>
+<li>process.nextTick</li>
+<li>MutationObserver</li>
+</ul>
+<p>预备知识已经准备的差不多了，现在我们开始执行上面那段代码。</p>
+<ul>
+<li>首先整体script进入主线程，遇到<code>console.log()</code>，立即输出『开始了』</li>
+<li>接下来遇到<code>setTimeout</code>，2s后回调函数function()被分发到宏任务Event Queue中（注意这里不是2s后<strong>执行</strong>），这里标记为setTimeout1</li>
+<li>遇到<code>for</code>，直接执行，同理<code>setTimeout</code>中的回调函数被分发到宏任务Event Queue中（这里涉及到闭包的知识），标记为setTimeout2，然后执行<code>console.log</code>，输出『1，2，3，4，5』</li>
+<li>遇到<code>promise</code>,<code>new Promise</code>直接执行，输出『promise1』。<code>then</code>被分发到微任务Event Queue中，标记为then1</li>
+<li>接下来又遇到了一个<code>setTimeout</code>，1s后回调函数function()被分发到宏任务Event Queue中，标记为setTimeout3</li>
+<li>又遇到<code>promise</code>，同理，输出『promise2』，<code>then</code>被分发到微任务Event Queue中，标记为then2</li>
+</ul>
+<p>第一轮事件循环的宏任务已经执行完毕。Event Queue中的任务如下表所示</p>
+<table>
+<thead>
+<tr>
+<th align="center"><strong>宏任务</strong></th>
+<th align="center"><strong>微任务</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">setTimeout1(2s later)</td>
+<td align="center">then1</td>
+</tr>
+<tr>
+<td align="center">setTimeout2(1s later)</td>
+<td align="center">then2</td>
+</tr>
+<tr>
+<td align="center">setTimeout3(1s later)</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p>根据上面的流程图，宏任务执行完后，js引擎的监视进程会检查此时有没有可以执行的微任务。这时后分发到微任务Event Queue的<code>then</code>将被执行。依次输出『then1』，『then2』</p>
+<p><strong>第一轮事件循环全部执行完毕。</strong></p>
+<p>好了，现在开始第二轮事件循环(1s后)。</p>
+<ul>
+<li>遇到<code>setTimeout2</code>,输出『6』，没有可以执行的微任务。执行新的宏任务。</li>
+<li>遇到<code>setTimeout3</code>,输出『timout2』，<code>new promise</code>立即执行，输出『timeout2_promise』，<code>then</code>被分发到微任务Event Queue中。标记为then3
+第二轮事件循环的宏任务执行完毕。Event Queue中的任务如下表所示</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center"><strong>宏任务</strong></th>
+<th align="center"><strong>微任务</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">setTimeout1(1s later)</td>
+<td align="center">then3</td>
+</tr>
+<tr>
+<td align="center">setTimeout2(1s later)</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p>同理，宏任务执行完后。执行此轮的微任务then3。</p>
+<p><strong>第二轮事件循环全部执行完毕。</strong></p>
+<ul>
+<li>遇到<code>setTimeout1</code>，执行<code>console.log</code>，输出『timeout1』，<code>new promise</code>立即执行，输出『timeout1_promise』,<code>then</code>被分发到微任务Event Queue中。标记为then4</li>
+<li>第三轮事件循环宏任务执行完毕，执行此轮的微任务<code>then</code>，输出『timeout1_then』</li>
+</ul>
+<p><strong>第三轮事件循环执行完毕。</strong></p>
+<ul>
+<li><code>setTimeout2</code>中依次会产生4个宏任务，每隔1s输出一个6</li>
+</ul>
+<p><strong>至此，整段代码全部执行结束。</strong></p>
+<blockquote>
+<p>总结：宏任务执行完了，执行该宏任务产生的微任务。如果微任务在执行过程中产生新的微任务，则继续执行微任务。微任务执行完毕后，回到宏任务中开始下一轮循环。</p>
+</blockquote>
+<h2>async</h2>
+<h2>node</h2>
+<h2>参考资料</h2>
+<ul>
+<li><a href="https://juejin.im/post/5e5c7f6c518825491b11ce93">说说事件循环机制</a></li>
+<li><a href="https://juejin.im/post/59e85eebf265da430d571f89">这一次，彻底弄懂 JavaScript 执行机制</a></li>
+</ul>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[初识格律诗创作]]></title>
+        <id>https://wangjb.appinn.me/posts/Tang_Poems</id>
+        <link href="https://wangjb.appinn.me/posts/Tang_Poems"/>
+        <updated>2019-12-25T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[格律诗创作入门笔记：从开源工具 cope 开始，解析平仄、押韵、对仗与黏连四大基本要素。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=%E5%88%9D%E8%AF%86%E6%A0%BC%E5%BE%8B%E8%AF%97%E5%88%9B%E4%BD%9C&description=%E6%A0%BC%E5%BE%8B%E8%AF%97%E5%88%9B%E4%BD%9C%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B0%EF%BC%9A%E4%BB%8E%E5%BC%80%E6%BA%90%E5%B7%A5%E5%85%B7+cope+%E5%BC%80%E5%A7%8B%EF%BC%8C%E8%A7%A3%E6%9E%90%E5%B9%B3%E4%BB%84%E3%80%81%E6%8A%BC%E9%9F%B5%E3%80%81%E5%AF%B9%E4%BB%97%E4%B8%8E%E9%BB%8F%E8%BF%9E%E5%9B%9B%E5%A4%A7%E5%9F%BA%E6%9C%AC%E8%A6%81%E7%B4%A0%E3%80%82" alt="初识格律诗创作"></p><h2>前言</h2>
+<p>最近在github上发现了一个很有意思的开源项目，<a href="https://github.com/LingDong-/cope">格律诗编辑程序</a>。它不但可以自动检查平仄等格律规则，并且能够通过机器学习来将自己的作品和《全唐诗》的诗句做对比。从而得出和自己所写诗句相似度高的唐诗。
+想来，高中的时候也有一段时间痴迷于创作诗词，只是当时对于很多的基础知识都不是很了解。所以写出来的东西也只是自娱自乐，没有什么章法可言。
+cope这个项目是使用node.js写的，运行在electron框架。刚好自己也在学习相关的知识，学习开发的同时又能学习诗词创作，何乐而不为呢。</p>
+<h2>基本要素</h2>
+<h3>平仄</h3>
+<ol>
+<li>四声
+解释：简单来说，对于<strong>普通话</strong>而言，1，2声为平，3，4声为仄。</li>
+<li>基本句式</li>
+</ol>
+<ul>
+<li>平起平收：平平【仄】仄平</li>
+<li>平起仄收：【平】平平仄仄</li>
+<li>仄起平收：【仄】仄仄平平</li>
+<li>仄起仄收：【仄】仄平平仄
+解释：平完了仄，仄完了平。【】里面的可平可仄。七言律诗同理，只需在前面加上两个平仄相反的字。</li>
+</ul>
+<h3>押韵</h3>
+<h4>规则</h4>
+<p>双数句必须是同一个韵部，必须是平声韵。</p>
+<h3>对仗</h3>
+<h4>规则</h4>
+<ol>
+<li>律绝句不需要必须对仗</li>
+</ol>
+<p>王昌龄《出塞》 =&gt; 不对仗</p>
+<blockquote>
+<p>清时明月汉时关，万里长征人未还。但使龙城飞将在，不教胡马度阴山。</p>
+</blockquote>
+<p>杜甫《绝句》 =&gt; 对仗</p>
+<blockquote>
+<p>两个黄鹂鸣翠柳，一行白鹭上青天。窗含西岭千秋雪，门泊东吴万里船。</p>
+</blockquote>
+<ol start="2">
+<li>八句律诗中间两联必须对仗</li>
+</ol>
+<p>李商隐《锦瑟》</p>
+<blockquote>
+<p>锦瑟无端五十弦，一弦一柱思华年。【庄生晓梦迷蝴蝶，望帝春心托杜鹃】。
+【沧海月明珠有泪，蓝田日暖玉生烟】。此情可待成追忆，只是当时已惘然。</p>
+</blockquote>
+<ol start="3">
+<li>八句以上的排律除了首尾两联，中间所有联必须对仗</li>
+</ol>
+<h4>对仗的不同种类</h4>
+<ol>
+<li>工对 =&gt; 词性和门类均相同，上文杜甫的绝句就是典型的工对。两个 || 一行；黄鹂 || 白鹭；窗含 || 门泊；</li>
+<li>宽对，邻对 =&gt; 词性和大的类别相同，如上文的柳 || 天；雪 || 船；它们门类不同，但都是名词。</li>
+<li>....</li>
+</ol>
+<h3>黏连</h3>
+<h4>规则</h4>
+<p>双数句的第二个字和单数句的第二个字平仄要一致</p>
+<h2>结语</h2>
+<p>这篇文章整理了格律诗创作的基本知识和一些规则。当然格律诗创作如果过于追求形式上的规范，也可能会失去创作的乐趣。不过对于初学者而言，还是应该明白这些规则和常识。其实学习之道也大抵于此，只有先熟练掌握规则，才能创造。</p>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Account Abstraction 初探]]></title>
+        <id>https://wangjb.appinn.me/posts/account_abstraction</id>
+        <link href="https://wangjb.appinn.me/posts/account_abstraction"/>
+        <updated>2023-05-23T12:00:00.000Z</updated>
+        <summary type="html"><![CDATA[深入浅出探讨以太坊账户抽象（Account Abstraction）与 ERC-4337 标准。从 EOA 账户的局限性出发，解析 AA 如何通过“可编程交易验证”解决私钥管理痛点，并带来 Gas 代付、社交恢复等 Web3 用户体验的革新。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=Account+Abstraction+%E5%88%9D%E6%8E%A2&description=%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%E6%8E%A2%E8%AE%A8%E4%BB%A5%E5%A4%AA%E5%9D%8A%E8%B4%A6%E6%88%B7%E6%8A%BD%E8%B1%A1%EF%BC%88Account+Abstraction%EF%BC%89%E4%B8%8E+ERC-4337+%E6%A0%87%E5%87%86%E3%80%82%E4%BB%8E+EOA+%E8%B4%A6%E6%88%B7%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7%E5%87%BA%E5%8F%91%EF%BC%8C%E8%A7%A3%E6%9E%90+AA+%E5%A6%82%E4%BD%95%E9%80%9A%E8%BF%87%E2%80%9C%E5%8F%AF%E7%BC%96%E7%A8%8B%E4%BA%A4%E6%98%93%E9%AA%8C%E8%AF%81%E2%80%9D%E8%A7%A3%E5%86%B3%E7%A7%81%E9%92%A5%E7%AE%A1%E7%90%86%E7%97%9B%E7%82%B9%EF%BC%8C%E5%B9%B6%E5%B8%A6%E6%9D%A5+Gas+%E4%BB%A3%E4%BB%98%E3%80%81%E7%A4%BE%E4%BA%A4%E6%81%A2%E5%A4%8D%E7%AD%89+Web3+%E7%94%A8%E6%88%B7%E4%BD%93%E9%AA%8C%E7%9A%84%E9%9D%A9%E6%96%B0%E3%80%82" alt="Account Abstraction 初探"></p><h2>什么是账户抽象</h2>
+<p>在回答这个问题之前，我们先思考两个问题「以太坊有哪些账户类型」以及「为什么要提出账户抽象」。</p>
+<h3>账户类型</h3>
+<ul>
+<li>EOA(externally owned account)</li>
+<li>CA(contract account)，不能<strong>主动发起交易</strong></li>
+</ul>
+<h3>为什么提出「账户抽象」</h3>
+<p>从上面的 EOA 交易机制流程图中我们可以发现目前存在的一些问题：</p>
+<ul>
+<li>私钥管理 -&gt; <strong>单点失败风险</strong>（no you key, no you coin）</li>
+<li>依赖于 ECDSA 签名 -&gt; <strong>无法对抗量子计算</strong></li>
+<li>交易验证逻辑写在协议层 -&gt; <strong>糟糕的用户体验</strong></li>
+</ul>
+<p>纵观近几年的 EIP 提案，开发者们始终希望用户的账户具备<strong>图灵完备的能力</strong>。相关工作一直都在进行，终于 ERC-4337<a href="%5BEIP-4337%5D(https://eips.ethereum.org/EIPS/eip-4337)">^1</a> 应运而生。业内也统一了「Account Abstraction」的说法。</p>
+<p>这个方案不需要修改协议层，实现了把账户抽象的交易验证从协议层抽离出来，放在了应用层。但是虽然在应用层，它还是属于一个<strong>技术标准</strong>，新开发的智能合约钱包们应该遵循这个标准<a href="%5B%E8%B4%A6%E6%88%B7%E6%8A%BD%E8%B1%A1%E5%B0%86%E7%BB%99web3%E5%B8%A6%E6%9D%A5%E6%80%8E%E6%A0%B7%E7%9A%84%E7%94%9F%E5%91%BD%E5%8A%9B%EF%BC%9F%5D(https://mp.weixin.qq.com/s/kSg2otMv7M--ANjbzTn5hA)">^2</a>。</p>
+<p>重新回到一开始的问题——「什么是账户抽象」。回顾上述内容，我们大概已经明白了 EOA 交易机制目前存在的问题以及 ERC-4337 的交易流程。于是可以试着给「账户抽象」下个定义：</p>
+<blockquote>
+<p>账户抽象是一种使用可编程方式来验证交易有效性的技术方案</p>
+</blockquote>
+<h2>应用场景</h2>
+<ul>
+<li>找回私钥</li>
+<li>Gas 费代付，批量授权及交易</li>
+<li>权限管理</li>
+</ul>
+<p>用户可以找回账户私钥，解决了「单点失败」的问题，开发者可以在 Web3 的世界中引入 Two-factor 验证来授权，私钥丢失了也可以使用邮箱找回。</p>
+<p>用户可以获得更好的交易体验，不必再去理解什么是 Gas 的问题。Defi 场景下的先授权再交易步骤，也可以合并成一笔交易，更加地方便。</p>
+<p>用户可以对账户进行权限管理，在一个公司或者 DAO 组织，管理者可以根据不同的用户角色设置不同的支出权限。</p>
+<h2>相关产品</h2>
+<ul>
+<li><a href="https://twitter.com/thirdweb/status/1658869752201375757">thirdweb</a></li>
+<li><a href="https://twitter.com/UniPassID">unipass</a></li>
+<li><a href="https://twitter.com/biconomy">biconomy</a></li>
+<li><a href="https://twitter.com/catgu_/status/1658693950461583360">visa</a></li>
+</ul>
+<h2>一些思考</h2>
+<p>尽管已经看到有很多的产品加入了「AA」这个赛道，但它目前仍处于非常早期的阶段。我很喜欢 lixin 在这个播客[^3]中的类比，「AA」之于「EOA」就如同「自动挡汽车」之于「手动挡汽车」。当自动挡汽车刚出现的时候，会充斥着费油和不安全的质疑声。</p>
+<p>或许 ERC-4337 已经给账户抽象搭好了框架，但是谁也无法预测它的下一个产品形态——相关的标准仍在制定中。这条路上充满了未知，机会，也许是荆棘。不过这也正是它最迷人的地方不是吗？</p>
+<p>[^3]: <a href="https://www.xiaoyuzhoufm.com/episode/64681e2de83d0982a0adce25?s=eyJ1IjogIjVlZTJkY2ZlZTBkNjY0YTQ3Nzk0MjQ2ZSJ9">Ep.29: HODLong 后浪</a></p>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[每周分享 -- 重拾git]]></title>
+        <id>https://wangjb.appinn.me/posts/git</id>
+        <link href="https://wangjb.appinn.me/posts/git"/>
+        <updated>2019-11-07T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Git 学习笔记：从核心原理出发，辨析 merge 与 rebase 的差异，并整理了本地与远程仓库版本回退的常用指令。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=%E6%AF%8F%E5%91%A8%E5%88%86%E4%BA%AB+--+%E9%87%8D%E6%8B%BEgit&description=Git+%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%9A%E4%BB%8E%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E5%87%BA%E5%8F%91%EF%BC%8C%E8%BE%A8%E6%9E%90+merge+%E4%B8%8E+rebase+%E7%9A%84%E5%B7%AE%E5%BC%82%EF%BC%8C%E5%B9%B6%E6%95%B4%E7%90%86%E4%BA%86%E6%9C%AC%E5%9C%B0%E4%B8%8E%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93%E7%89%88%E6%9C%AC%E5%9B%9E%E9%80%80%E7%9A%84%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4%E3%80%82" alt="每周分享 -- 重拾git"></p><p>这周轮到我做技术分享了，思来想去，还是决定选择git作为本周技术分享的主题。原因有二，一是最近在使用git时出现了一些难题，具体下文会有提到。二是，尽管每天都在使用git，但对于一些基础概念还是有模糊的地方，也想通过这次的分享进一步理解git。</p>
+<h2>git原理</h2>
+<p><strong>workspace</strong>: 工作区（当前的开发位置）</p>
+<ul>
+<li><code>git pull</code>: 从远程仓库拉取最新的代码到工作区 =&gt; <code>git fetch</code> + <code>git merge</code></li>
+<li><code>git diff</code>: 查看修改但未暂存的文件</li>
+</ul>
+<p><strong>index</strong>: 暂存区</p>
+<ul>
+<li><code>git add</code>: 工作区修改的内容提交到暂存区</li>
+</ul>
+<p><strong>repository</strong>: 本地仓库</p>
+<ul>
+<li><code>git commit</code>: 将暂存区内容提交到本地仓库</li>
+<li><code>git fetch</code>或者<code>git clone</code>: 从远程仓库拉取/克隆代码到本地仓库</li>
+</ul>
+<p><strong>remote repository</strong>: 远程仓库</p>
+<ul>
+<li><code>git push</code>: 将本地仓库内容提交到远程仓库</li>
+</ul>
+<h2>常见问题</h2>
+<ol>
+<li>git push origin master具体是在做什么事?</li>
+</ol>
+<p>把本地<code>master</code>分支上的内容，推一份到<code>origin</code>这个地方，并且在<code>origin</code>这个地方建立一个同名的<code>master</code>分支
+<strong>完整指令</strong>:<code>git push origin master:master</code> =&gt; <code>git push &lt;远程主机名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;</code></p>
+<ol start="2">
+<li>git merge和git rebase的区别</li>
+</ol>
+<p>举例：把test分支合并到master分支</p>
+<p><code>git merge</code>的结果</p>
+<p><code>git rebase</code>的结果</p>
+<p><a href="https://gitbook.tw/playground#rebase">在线演示</a></p>
+<h2>最近遇到的问题</h2>
+<ol>
+<li>本地项目运行出错，想要回退到之前的版本 =&gt; 本地仓库回退到之前的版本</li>
+</ol>
+<pre><code class="language-bash">git reset --hard/soft [需要回退的提交点]
+</code></pre>
+<ol start="2">
+<li>撤销已经推送到仓库的提交 =&gt; 远程仓库回退到之前的版本</li>
+</ol>
+<pre><code class="language-bash">git reset --hard [需要回退的提交点]
+git push origin HEAD --force 
+</code></pre>
+<h2>更多</h2>
+<ul>
+<li><a href="http://marklodato.github.io/visual-git-guide/index-zh-cn.html">图解Git</a></li>
+<li><a href="https://gitbook.tw/">为你自己學Git</a></li>
+<li><a href="https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging">Git-Branching</a></li>
+</ul>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[城市漫步——去江油走走停停]]></title>
+        <id>https://wangjb.appinn.me/posts/jiangyou</id>
+        <link href="https://wangjb.appinn.me/posts/jiangyou"/>
+        <updated>2023-07-07T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[城市漫步随笔：四川江油的短途旅行。记录旅途中的人与事，李白故里的文化印记，以及关于“把自己作为方法”的思考。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=%E5%9F%8E%E5%B8%82%E6%BC%AB%E6%AD%A5%E2%80%94%E2%80%94%E5%8E%BB%E6%B1%9F%E6%B2%B9%E8%B5%B0%E8%B5%B0%E5%81%9C%E5%81%9C&description=%E5%9F%8E%E5%B8%82%E6%BC%AB%E6%AD%A5%E9%9A%8F%E7%AC%94%EF%BC%9A%E5%9B%9B%E5%B7%9D%E6%B1%9F%E6%B2%B9%E7%9A%84%E7%9F%AD%E9%80%94%E6%97%85%E8%A1%8C%E3%80%82%E8%AE%B0%E5%BD%95%E6%97%85%E9%80%94%E4%B8%AD%E7%9A%84%E4%BA%BA%E4%B8%8E%E4%BA%8B%EF%BC%8C%E6%9D%8E%E7%99%BD%E6%95%85%E9%87%8C%E7%9A%84%E6%96%87%E5%8C%96%E5%8D%B0%E8%AE%B0%EF%BC%8C%E4%BB%A5%E5%8F%8A%E5%85%B3%E4%BA%8E%E2%80%9C%E6%8A%8A%E8%87%AA%E5%B7%B1%E4%BD%9C%E4%B8%BA%E6%96%B9%E6%B3%95%E2%80%9D%E7%9A%84%E6%80%9D%E8%80%83%E3%80%82" alt="城市漫步——去江油走走停停"></p><h2>前言</h2>
+<p>日复一日地重复生活，加上最近酷热的天气让我感觉有些疲倦。不由冒出「去一个人不多的地方待上几天」的想法。不必要去做详尽的旅行规划，只想在一座陌生的城市之中走走停停。</p>
+<h2>出发</h2>
+<p>我用很快的时间便确定了城市漫步的目的地——四川江油。理由很简单：</p>
+<ul>
+<li>出行方便，适合短期旅行</li>
+<li>气温尚可，不算特别炎热</li>
+<li>有山有水，还有值得探索的文化与美食</li>
+</ul>
+<p>从西安出发前往江油，只有两个多小时的路程。自北向南列车穿过关中平原、秦岭山区，窗外是久违的大山大河。两小时的时长很短，短到我刚好可以听完一期完整的播客。</p>
+<h2>人们</h2>
+<h3>江边早市摆摊的商贩</h3>
+<p>天微微亮，早市中此起彼伏的吆喝声便叫醒了还在沉睡之中的小城。我住的地方是一个依江而建的民宿，江风吹来阵阵吆喝声已然让我无法入睡，便索性起床逛逛江边早市。</p>
+<p>出门抬眼就看见了市场，大部分商贩都是骑着电动三轮车来这里摆摊，卖的东西都是些日常的瓜果蔬菜。吆喝声被商贩们提前录好放在大喇叭中，在循环播放。我听见过很多地方的吆喝声，在西安的路边或是在我家乡的集市上。不同的是，这里的吆喝声更加地特别，内容好似经过一番设计。在四川方言的加成下，显得更加抑扬顿挫。</p>
+<h3>实习的警校女生</h3>
+<p>午睡之后，我来到了城区中唯一的一家星巴克。坐在我对面的是两个戴着口罩的女生，她们正在用普通话交流。显得与周围格格不入。我主动和她们攀谈起来，原来她们是来当地实习的大学生。</p>
+<p>我很好奇这座小城市会提供怎样的实习的岗位，于是便问起了她们的专业。出乎意料，眼前这两个文弱的女生竟然就读于一所警校。和大部分面临毕业而感到迷茫的大学生相比，她们的未来将更加确定。</p>
+<h3>自驾游的情侣</h3>
+<p>从城区打车前往二十公里之外的「中华洞天」，远离烈日之下的城市，在溶洞中漫步是再好不过的选择。途中与司机闲聊，他告诉我江油正在大力发展旅游业。交通便利则是先天优势，一座只有几十万人口的地级市，却坐拥三个高铁站。言语间我感受到他对于这座城市未来的希冀。</p>
+<p>洞口把外面的世界和里面的洞天分割成两个不同的季节。一步之遥，仿佛便从炎炎夏日进入初秋。洞内的温度只有 20° 左右，地上湿漉漉的，感觉非常凉爽。走几步往里看，五彩斑斓的灯光打在形状各异的乳石上，更显奇幻迷离。</p>
+<p>回去的途中又遇到了刚才漂流时同一条船上的两人，我询问他们是从哪里过来的——如果是回城区的话可以一起拼车。男生告诉我他们是从四川另外一个城市——阆中，开车两百多公里过来的。并说他们刚好要开车回去，顺路可以载我一程。短暂的二十分钟车程，我们聊了一些关于四川方言，以及周边有哪些值得去的地方。到了城区，当我下车准备给他转账时，他谢绝了我的车费，并鼓励我继续探索四川的美食与文化。</p>
+<h3>咖啡店的老板</h3>
+<p>在巷子中闲逛，余光不经意间瞥向了左手旁半掩着的铁门。走近看了下招牌，原来是一家咖啡店。总共两层，一层的院子里种满了紫罗兰、睡莲还有一些我叫不出名字的植物。</p>
+<p>楼道中贴满了各种各样的明信片，大致看了下内容都是「高考」、「恋爱」之类的主题，可能是老板找高中生写的（逃。其中一张明信片上留下了这样一句歌词——「十七岁的那年，吻过他的脸，就以为和他能永远」。</p>
+<p>二层有两个精心装饰过的咖啡厅，旁边还有两个房间可以打麻将。我点了一杯拿铁，坐在靠近过道的位置。整个咖啡厅只有我和老板，还有一个店员。老板似乎看出我是从外地过来的，便主动问我来自哪里。接着，我们聊了一些关于这里的物价，以及消费力的话题。</p>
+<h3>李白</h3>
+<p>这座城市之中到处都是李白留下的影子，诗仙大道、太白公园、李白纪念馆。遗憾的是，当我到达李白纪念馆时却看到门口的公告栏正写着「闭馆维护中」。</p>
+<p>铩羽而归的途中，路过了太白公园。看到公园门口进进出出散步的老人，还有正在追逐玩耍的孩子们。我不由想起了李白的那句诗——「今人不见古时月，今月曾经照古人」。一代代的人们终将逝去，又有什么会是永恒呢？</p>
+<h2>最后</h2>
+<p>写这篇文章的时候，我已经回到了西安，烈日依旧。最近再次阅读《把自己作为方法》这本书，我也在思考一个问题。如何找到日常生活的意义感，又不至于被只有意义而没有脚踏实地生活的虚无感所淹没。</p>
+<p>一直想这个问题反而会让我陷入到问题本身，或许并没有什么标准答案。去行走，去阅读，去写作。把自己放在不同的环境下，看看会发生什么。。。</p>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[日语入门]]></title>
+        <id>https://wangjb.appinn.me/posts/learn_japanese</id>
+        <link href="https://wangjb.appinn.me/posts/learn_japanese"/>
+        <updated>2019-03-23T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[日语入门笔记：从五十音起源 APP 开始，探索日文书写结构、汉字词义辨析与基础发音规则。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=%E6%97%A5%E8%AF%AD%E5%85%A5%E9%97%A8&description=%E6%97%A5%E8%AF%AD%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B0%EF%BC%9A%E4%BB%8E%E4%BA%94%E5%8D%81%E9%9F%B3%E8%B5%B7%E6%BA%90+APP+%E5%BC%80%E5%A7%8B%EF%BC%8C%E6%8E%A2%E7%B4%A2%E6%97%A5%E6%96%87%E4%B9%A6%E5%86%99%E7%BB%93%E6%9E%84%E3%80%81%E6%B1%89%E5%AD%97%E8%AF%8D%E4%B9%89%E8%BE%A8%E6%9E%90%E4%B8%8E%E5%9F%BA%E7%A1%80%E5%8F%91%E9%9F%B3%E8%A7%84%E5%88%99%E3%80%82" alt="日语入门"></p><p>学习日语已经有一周多的时间了，这一周的时间主要是基础部分的学习。包括日文的结构，五十音的读写和发音。
+为什么要学习日语呢？直接原因是，一周前，我看了少数派的一篇文章——<a href="https://sspai.com/post/53020">《聊一聊50音起源的再设计》</a>。作者是一名独立开发者，对产品设计与体验有着极致的追求。然后我便在ipad上体验了这个app。与其说是一个学习的app，不如说它是一个艺术品。于是，我决定立即学习日语（🆒）。
+当然也有很多其他的原因，例如日语发音很好听，想要学习ruby，喜欢听日文歌之类的。
+日式料理马上就要开始了，只有app作为食材是完全不够的。作为一个完全零基础的日语学习者，一开始，我甚至不知道50音是什么。所以我决定在mooc上选择一门入门的课程。mooc上有很多关于日语学习的课程，看了课程的视频简介后，我选择《自由自在日本行》作为我的入门零基础入门课程。一边学习日语，一边还能了解日本的文化与名胜。すごい！</p>
+<h2>学习方式</h2>
+<h2>组成结构</h2>
+<p><strong>混合书写</strong>是日本文字表达的特色</p>
+<ul>
+<li>万叶假名： 使用和日语同音的汉字来书写日文，以补足用汉语记录日语假名是相对于『真名（汉字）』而言的，假是『假借』的意思</li>
+<li>日文汉字： 主要用于表达实物的名称和动作</li>
+<li>平假名：日文中表音文字的一种，从万叶假名演化而来，形近汉语草书。主要用来标注日文汉字的注音，还有一些具有语法功能的助词和助动词</li>
+<li>片假名：平安时代初期为了训读<a href="%E5%8F%AA%E5%80%9F%E7%94%A8%E6%B1%89%E5%AD%97%E7%9A%84%E5%BD%A2%E5%92%8C%E4%B9%89%EF%BC%8C%E4%B8%8D%E9%87%87%E7%94%A8%E6%B1%89%E8%AF%AD%E7%9A%84%E9%9F%B3">^1</a>汉文发明的。由万叶假名的楷书写法中简化而来。主要用来书写外来语，拟声拟态词</li>
+<li>罗马字：多用于招牌和广告</li>
+</ul>
+<h2>日文汉字</h2>
+<p>中国人学习日语，自然是有天然的优势。因为汉语和日语都传承了<strong>古汉字</strong>的字形和字义，而且现代汉语中有很多词也借用了明治时期的<strong>日文翻译语</strong>。但在日文汉字中很多尽管字形和汉语相同，但含义却完全不同。</p>
+<blockquote>
+<p>旅行中常见的日文汉字</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>日文汉字</th>
+<th>中文翻译</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>无料</td>
+<td>免费</td>
+</tr>
+<tr>
+<td>仕度中</td>
+<td>（店铺）还未对外开放</td>
+</tr>
+<tr>
+<td>献立</td>
+<td>菜单</td>
+</tr>
+<tr>
+<td>注文</td>
+<td>点餐</td>
+</tr>
+<tr>
+<td>会计</td>
+<td>结账</td>
+</tr>
+<tr>
+<td>割引</td>
+<td>降价</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>格外注意的日文汉字</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>日文汉字</th>
+<th>中文翻译</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>手纸</td>
+<td>信</td>
+</tr>
+<tr>
+<td>新闻</td>
+<td>报纸</td>
+</tr>
+<tr>
+<td>娘</td>
+<td>女儿，女孩子</td>
+</tr>
+<tr>
+<td>丈夫</td>
+<td>坚固</td>
+</tr>
+<tr>
+<td>切手</td>
+<td>邮票</td>
+</tr>
+<tr>
+<td>勉强</td>
+<td>学习，用功</td>
+</tr>
+</tbody></table>
+<h2>50音学习</h2>
+<p>50音是日语学习的基础，但也让初学者很头疼。假名记不住，易记混，这可能是大部分人都要面临的问题。关于假名的记忆方法有很多种，我目前采用的方法是根据词源记忆。当然，你也可以试试<a href="https://www.zhihu.com/question/20318161/answer/53704368">形象记忆</a>。这里我想强调的是50音起源app的开发者kevin的一句话，『我认为日语学习并不是简单的学习假名，词汇，语法。而是应该是从其背后的文化开始学起，产生共鸣与认同』。</p>
+<h3>发音</h3>
+<p>发音也是50音学习过程中非常重要的一部分。好在汉语拼音基本包括了日语的罗马字读音。</p>
+<blockquote>
+<p>音调</p>
+</blockquote>
+<ul>
+<li>口型不变</li>
+<li>音调不变</li>
+</ul>
+<h4>清音</h4>
+<p>注意：
+さ行中</p>
+<table>
+<thead>
+<tr>
+<th align="center">罗马音</th>
+<th align="center">平假名</th>
+<th align="center">片假名</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">sa</td>
+<td align="center">さ</td>
+<td align="center">サ</td>
+</tr>
+<tr>
+<td align="center">shi</td>
+<td align="center">し</td>
+<td align="center">シ</td>
+</tr>
+<tr>
+<td align="center">su</td>
+<td align="center">す</td>
+<td align="center">ス</td>
+</tr>
+<tr>
+<td align="center">se</td>
+<td align="center">せ</td>
+<td align="center">セ</td>
+</tr>
+<tr>
+<td align="center">so</td>
+<td align="center">そ</td>
+<td align="center">ソ</td>
+</tr>
+</tbody></table>
+<p>し =&gt; 发xi的音
+す =&gt; 发音时要用接近う的口型</p>
+<h4>浊音</h4>
+<p>共有四行，在相对应的清音右上角加两点。口型和舌位与对应的清音一致，声带震动的时间要比清音早一点。
+注意：
+za行和da行，有两对假名发音一样，但是在日语单词中<strong>以じ、ず优先</strong>。</p>
+<table>
+<thead>
+<tr>
+<th align="center">罗马字</th>
+<th>假名</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">ji</td>
+<td>じジ ＆ ぢヂ</td>
+</tr>
+<tr>
+<td align="center">zu</td>
+<td>ずズ　＆ づヅ</td>
+</tr>
+</tbody></table>
+<h4>半浊音</h4>
+<p>在は行的右上角加上一个圈圈</p>
+<p>注意：</p>
+<table>
+<thead>
+<tr>
+<th>假名</th>
+<th>中文翻译</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>かき</td>
+<td>钥匙</td>
+</tr>
+<tr>
+<td>かき</td>
+<td>柿子</td>
+</tr>
+<tr>
+<td>がき</td>
+<td>小淘气鬼</td>
+</tr>
+</tbody></table>
+<h4>长音</h4>
+<p>在日语中，元音的长度会影响到单词的意思。长元音的发音长度大致是短元音的两倍，一个假名一拍，长音的长度是两拍。</p>
+<table>
+<thead>
+<tr>
+<th>短音</th>
+<th>长音</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>おばさん（伯母，舅妈，婶婶，阿姨）</td>
+<td>おば<strong>あ</strong>さん（祖母，外祖母）</td>
+</tr>
+<tr>
+<td>おじさん（伯父，叔叔，姑父，舅舅）</td>
+<td>おじ<strong>い</strong>さん（祖父，外祖父）</td>
+</tr>
+<tr>
+<td>いえ（房子）</td>
+<td>い<strong>い</strong>え（不）</td>
+</tr>
+<tr>
+<td>くろ（黑色）</td>
+<td>く<strong>う</strong>ろ（乘飞机）</td>
+</tr>
+<tr>
+<td>ちず（地图）</td>
+<td>チ<strong>ー</strong>ズ（奶酪）</td>
+</tr>
+</tbody></table>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[学会学]]></title>
+        <id>https://wangjb.appinn.me/posts/lhtl</id>
+        <link href="https://wangjb.appinn.me/posts/lhtl"/>
+        <updated>2018-04-04T12:00:21.000Z</updated>
+        <summary type="html"><![CDATA[关于学习方法论的思考与实践：以 React + TypeScript 的学习为例，分享如何从零开始通过“严肃学习”掌握一门新技术。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=%E5%AD%A6%E4%BC%9A%E5%AD%A6&description=%E5%85%B3%E4%BA%8E%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E8%AE%BA%E7%9A%84%E6%80%9D%E8%80%83%E4%B8%8E%E5%AE%9E%E8%B7%B5%EF%BC%9A%E4%BB%A5+React+%2B+TypeScript+%E7%9A%84%E5%AD%A6%E4%B9%A0%E4%B8%BA%E4%BE%8B%EF%BC%8C%E5%88%86%E4%BA%AB%E5%A6%82%E4%BD%95%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E9%80%9A%E8%BF%87%E2%80%9C%E4%B8%A5%E8%82%83%E5%AD%A6%E4%B9%A0%E2%80%9D%E6%8E%8C%E6%8F%A1%E4%B8%80%E9%97%A8%E6%96%B0%E6%8A%80%E6%9C%AF%E3%80%82" alt="学会学"></p><p>最近看了篇文章——《新技术学习不完全指北》<a href="%E5%8E%9F%E6%96%87%5B%E6%88%B3%E8%BF%99%E9%87%8C%5D(https://mp.weixin.qq.com/s/cO_aC6GmKNA_WS6TUsiHkg)">^1</a>，很受启发。我经常会陷入「不知道学什么」和「不知道怎么学」的困境。有的时候也会做出一些所谓看起来的努力，但是收效甚微。</p>
+<p>这篇文章会列举出部分上文中提到的关于新技术学习的方法，同时结合自己最近学习react的经历。探索一下如何学习。</p>
+<p>先来审视下自己。拿现在自己从事的前端开发工作来说，我熟悉的技术栈都有哪些呢。工作中主要以JavaScript + Vue + CSS为主。因为公司的业务相对比较简单，所以并没有太多纵向探索的空间<a href="%E8%AF%9A%E7%84%B6%E5%93%AA%E6%80%95%E3%80%8C%E7%AE%80%E5%8D%95%E3%80%8D%E7%9A%84CSS%E9%83%BD%E6%9C%89%E6%97%A0%E9%99%90%E6%8E%A2%E7%B4%A2%E7%9A%84%E6%96%B9%E5%90%91%EF%BC%8C%E8%BF%99%E9%87%8C%E5%8F%AA%E6%98%AF%E4%BB%8E%E4%B8%9A%E5%8A%A1%E8%A7%92%E5%BA%A6%E8%80%8C%E8%A8%80">^2</a>。因此我想横向突破自己，也就是上面说的第一个困境——学什么。</p>
+<h2>学习动机</h2>
+<h3>工作需求</h3>
+<blockquote>
+<p>工作需求，是一个强烈的、持续性的、外部驱动的学习动机。那些跟工作关联起来的技术，通常就是我们掌握得最扎实、构成我们核心技术能力的部分。而那些跟工作关联程度弱的技术，则是最容易中途放弃的部分。</p>
+</blockquote>
+<p>其实很早之前就想学习react，typescript，但一直都没有去做。对于typescript的了解，只是知道它是javascript的超集。具体是啥样的，一直没有去看。原因是没有<code>充分的学习动机</code>。尽管我在github上看到很多优秀的开源项目都是以ts + react为技术栈，但是一直没有深入持续地探索。</p>
+<h2>严肃学习</h2>
+<h3>反思之前的失败经验</h3>
+<p>很早之前——刚刚接触前端的时候，我在做一些看似努力的行为。经常会去看掘金社区的文章，还有「反复」看一些官方文档。首先我看一些技术文章的时间，大部分是在等待吃饭或者等地铁的时候。这部分其实是相当「碎片」的时间，很难去系统地学习。</p>
+<p>所以这次再次决定学习react，在一开始我就制定了目标——完成<a href="https://github.com/Microsoft/frontend-bootcamp">frontend-bootcamp</a>上的练习。因为这个项目是使用typescript + react实现的。</p>
+<h2>高强度间歇性训练</h2>
+<blockquote>
+<p>让阅读材料反复出现</p>
+</blockquote>
+<p>结合学习react来说，主线学习是以<code>frontend-bootcamp</code>这个项目为主。总共分为两大步，总计13个小节。在写这篇文章的时候，我已经完成了全部的13个练习——使用ts + react实现了一个todo app。包括使用状态管理工具redux和fluent-ui来优化项目。</p>
+<h2>超纲训练</h2>
+<ul>
+<li>给todoitem加上颜色标签</li>
+<li>对todoitem进行分类</li>
+</ul>
+<h2>成果积累 =&gt; 输出</h2>
+<ul>
+<li>github</li>
+<li>blog</li>
+</ul>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Megi — 将线性对话，生长为思考的知识树]]></title>
+        <id>https://wangjb.appinn.me/posts/megi</id>
+        <link href="https://wangjb.appinn.me/posts/megi"/>
+        <updated>2025-11-01T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[比答案更重要的是提问的逻辑。介绍我开发的工具 Megi — 它不仅是一个对话整理插件，更能将杂乱的 AI 对话记录重构为可视化的“思考树”，让发散的思维路径变得清晰可循，且数据完全本地存储。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=Megi+%E2%80%94+%E5%B0%86%E7%BA%BF%E6%80%A7%E5%AF%B9%E8%AF%9D%EF%BC%8C%E7%94%9F%E9%95%BF%E4%B8%BA%E6%80%9D%E8%80%83%E7%9A%84%E7%9F%A5%E8%AF%86%E6%A0%91&description=%E6%AF%94%E7%AD%94%E6%A1%88%E6%9B%B4%E9%87%8D%E8%A6%81%E7%9A%84%E6%98%AF%E6%8F%90%E9%97%AE%E7%9A%84%E9%80%BB%E8%BE%91%E3%80%82%E4%BB%8B%E7%BB%8D%E6%88%91%E5%BC%80%E5%8F%91%E7%9A%84%E5%B7%A5%E5%85%B7+Megi+%E2%80%94+%E5%AE%83%E4%B8%8D%E4%BB%85%E6%98%AF%E4%B8%80%E4%B8%AA%E5%AF%B9%E8%AF%9D%E6%95%B4%E7%90%86%E6%8F%92%E4%BB%B6%EF%BC%8C%E6%9B%B4%E8%83%BD%E5%B0%86%E6%9D%82%E4%B9%B1%E7%9A%84+AI+%E5%AF%B9%E8%AF%9D%E8%AE%B0%E5%BD%95%E9%87%8D%E6%9E%84%E4%B8%BA%E5%8F%AF%E8%A7%86%E5%8C%96%E7%9A%84%E2%80%9C%E6%80%9D%E8%80%83%E6%A0%91%E2%80%9D%EF%BC%8C%E8%AE%A9%E5%8F%91%E6%95%A3%E7%9A%84%E6%80%9D%E7%BB%B4%E8%B7%AF%E5%BE%84%E5%8F%98%E5%BE%97%E6%B8%85%E6%99%B0%E5%8F%AF%E5%BE%AA%EF%BC%8C%E4%B8%94%E6%95%B0%E6%8D%AE%E5%AE%8C%E5%85%A8%E6%9C%AC%E5%9C%B0%E5%AD%98%E5%82%A8%E3%80%82" alt="Megi — 将线性对话，生长为思考的知识树"></p><p>作为一个重度 AI 用户，在用 ChatGPT、豆包或 DeepSeek 处理复杂任务（比如写代码、构思文章）时，我经常遇到一个问题：</p>
+<p><strong>“思维发散时，对话却只能线性堆叠。”</strong></p>
+<p>当我进行<strong>长下文对话</strong>时，思路往往是发散的。比如解决一个 Bug，我可能会针对 A 方案问几句，发现不行，又退回去针对 B 方案问几句。但在原本的网页里，这些对话全部混在一起，非常杂乱。</p>
+<p>过几天想找回当时的某个思路？基本只能靠鼠标滚轮疯狂向上翻页，去寻找当初的那个提问。</p>
+<p>为了解决这个问题，我开发了 <strong>Megi</strong>。</p>
+<h3>Megi 是什么</h3>
+<p>简单来说，Megi 是一个浏览器扩展，将原本平铺直叙的对话记录，重构为<strong>树状结构</strong>。</p>
+<p>它支持目前主流的 AI 平台（ChatGPT, Gemini, DeepSeek, 豆包, 文心一言, 通义千问, 腾讯元宝等），并提供以下核心功能：</p>
+<ul>
+<li><strong>结构化整理</strong>：自动抓取你的提问，生成清晰的目录树，让对话脉络一目了然。</li>
+<li><strong>沉浸式导航</strong>：点击侧边栏问题，对话框瞬时滚动至目标位置。无需反复上下翻找。</li>
+<li><strong>拖拽分组</strong>：你可以把一个「<strong>追问</strong>」直接<strong>拖拽</strong>到另一个问题下面，成为子节点。像在 Notion 里整理笔记一样，把散乱的对话手动整理成一颗知识树。</li>
+<li><strong>长文折叠</strong>：当粘贴<strong>大段代码或长文档</strong>时，自动收起冗长输入。既保留上下文，又保持网页干净整洁。</li>
+</ul>
+<h3>比答案更重要的，是提问的逻辑</h3>
+<p>市面上也有一些生成 AI 会话大纲的插件，但 Megi 的核心理念在于——<strong>重塑提问的价值</strong>。</p>
+<p>你会发现，Megi 的侧边栏<strong>只提取问题，不提取答案</strong>。这并非技术限制，而是我有意的产品克制。</p>
+<p>我相信：<strong>能否提出一个好问题，往往比得到答案更重要。</strong></p>
+<h3>像整理笔记一样整理对话</h3>
+<p>Megi 支持<strong>拖拽分组</strong>。这是它最能体现“思考树”特性的功能。</p>
+<p>你可以把一个“追问”，直接<strong>拖拽</strong>到主问题下面，使其成为子节点。<br>当你手动进行这个动作时，你其实是在整理自己的<strong>逻辑树</strong>：</p>
+<ul>
+<li>这个问题的根源在哪里？</li>
+<li>我为了解决它，尝试了哪几个分支？</li>
+<li>哪个节点最终导向了解决方案？</li>
+</ul>
+<p>回头再看侧边栏，你看到的不再是一堆零散的 Q&amp;A，而是一条完整的、由自己亲手构建的<strong>思维路径</strong>。</p>
+<h3>思考的留白</h3>
+<p>当 AI 正在思考或生成答案时，侧边栏会浮现一个问题卡片。这些问题来自于我之前看过的一本书 —《那些古怪又让人忧心的问题（What if）》</p>
+<blockquote>
+<ul>
+<li>“如果所有人类都消失了，那么最后一个人造光源何时熄灭？”</li>
+<li>“在这个世界上离其他活人最远的人是谁？他们孤独吗？”</li>
+<li>“如果你把元素周期表里的元素制作成立方砖头，并按照周期表的排列方式把这些方块一个个拼起来，会发生什么？”</li>
+</ul>
+</blockquote>
+<p>希望在等待 AI 给你答案的时候，这些没有标准答案的问题能引发你的小小思考。</p>
+<h3>数据隐私</h3>
+<ul>
+<li><strong>无服务器</strong>：Megi 没有搭建任何服务器来同步你的数据。</li>
+<li><strong>本地存储</strong>：所有的树状结构、分组调整、折叠状态，全部存储在你的本地浏览器中（Local Storage）。</li>
+</ul>
+<h3>写在最后</h3>
+<p>工具的本质是思维的延伸。如果你厌倦了在长对话中迷失方向，如果你也认为“提问”本身就是一种高价值的创造，希望 Megi 能成为你 AI 之旅中的那根手杖。</p>
+<p>目前 Megi 已经上架 Chrome 和 Edge 商店，虽然已经迭代了几个版本，体验趋于丝滑，但作为个人开发者作品，难免还有 Bug。欢迎大家在评论区或通过邮件反馈，我会持续维护和改进。</p>
+<p><strong>网站</strong></p>
+<p><a href="https://megi.dev/">https://megi.dev/</a></p>
+<p><strong>下载地址</strong></p>
+<ul>
+<li><strong>(Chrome 应用商店)：</strong><br>[<a href="https://chromewebstore.google.com/detail/megi/gdnphcdionfgjohfhnjeoiaiicilbolj?utm_source=item-share-cb">https://chromewebstore.google.com/detail/megi/gdnphcdionfgjohfhnjeoiaiicilbolj?utm_source=item-share-cb</a>]</li>
+<li><strong>(Edge 应用商店)：</strong><br>[<a href="https://microsoftedge.microsoft.com/addons/detail/megi/fpkmedhlhmeolnkndjjgdgpnmibcfcof">https://microsoftedge.microsoft.com/addons/detail/megi/fpkmedhlhmeolnkndjjgdgpnmibcfcof</a>]</li>
+</ul>
+<hr>
+<p><strong>使用效果图</strong></p>
+<p><img src="https://blog-assets.shenn.xyz/screenshot_01_zh.png" alt=""></p>
+<p><img src="https://blog-assets.shenn.xyz/screenshot_02_zh.png" alt=""></p>
+<p><img src="https://blog-assets.shenn.xyz/screenshot_03_zh.png" alt=""></p>
+<p><img src="https://blog-assets.shenn.xyz/screenshot_04_zh.png" alt=""></p>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[变量命名的艺术]]></title>
+        <id>https://wangjb.appinn.me/posts/named</id>
+        <link href="https://wangjb.appinn.me/posts/named"/>
+        <updated>2019-07-26T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[变量命名指南：一篇关于如何优雅命名 Array、Boolean、Number 和 Function 的译文，旨在通过好的命名提升代码的可读性。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=%E5%8F%98%E9%87%8F%E5%91%BD%E5%90%8D%E7%9A%84%E8%89%BA%E6%9C%AF&description=%E5%8F%98%E9%87%8F%E5%91%BD%E5%90%8D%E6%8C%87%E5%8D%97%EF%BC%9A%E4%B8%80%E7%AF%87%E5%85%B3%E4%BA%8E%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E5%91%BD%E5%90%8D+Array%E3%80%81Boolean%E3%80%81Number+%E5%92%8C+Function+%E7%9A%84%E8%AF%91%E6%96%87%EF%BC%8C%E6%97%A8%E5%9C%A8%E9%80%9A%E8%BF%87%E5%A5%BD%E7%9A%84%E5%91%BD%E5%90%8D%E6%8F%90%E5%8D%87%E4%BB%A3%E7%A0%81%E7%9A%84%E5%8F%AF%E8%AF%BB%E6%80%A7%E3%80%82" alt="变量命名的艺术"></p><p>这是一篇最近翻译的译文<a href="%5B%E5%8E%9F%E6%96%87%E9%93%BE%E6%8E%A5%5D(https://hackernoon.com/the-art-of-naming-variables-52f44de00aad)">^1</a>（也是我的第二篇译文👏），在文章的部分地方做了少许改动，同时也在原文的基础上增加了一些内容。希望不要误人子弟。Have Fun!</p>
+<blockquote>
+<p>在计算机科学领域里只有两件事可以称之为难事：缓存失效（cache invalidation）和命名问题（naming things）。—— Phil Karlton</p>
+</blockquote>
+<p>关于命名这件事，在某些时候的确是非常困难的。但却值得我们花费精力去研究它。回顾一下，之前你是否看过类似于这样的代码？</p>
+<pre><code class="language-js">const convertObj = (x, y, z) =&gt; {
+    const k = Object.keys(x);
+    return k.map((key) =&gt; {
+        return {
+            [y]: key,
+            [z]: x[key],
+        }
+    });
+}
+</code></pre>
+<p>你能立刻知道它在做些什么吗？当然在你逐行读完这段代码后，可能会理解它想表达什么。但是，如果这段代码中的变量的命名方式更加优雅的话，我们会更容易理解这段内容。</p>
+<p>好的变量命名是非常重要的，尤其是在动态类型语言中，因为没法用已经定义好的变量基本类型去帮助你理解该变量确切的含义。然而，如果能够在动态类型的语言中使用好的命名方法，代码较于静态类型的语言会变得更加易读。</p>
+<p>接下来我将分享一些有关命名方法的基本规则，这些是我这些年来的经验之谈。通过变量不同的基本类型，对比举出一些例子。就让我们先从数组开始吧。</p>
+<h2>Arrays</h2>
+<p>数组对象是有序数据的集合，各项的基本类型大致相同。因为数组包含多个变量值，变量的命名应当是有意义的复数形式。</p>
+<pre><code class="language-js">// 很bad很sad很drama
+const fruit = [&#39;apple&#39;, &#39;banana&#39;, &#39;cucumber&#39;];
+// 凑合
+const fruitArr = [&#39;apple&#39;, &#39;banana&#39;, &#39;cucumber&#39;];
+// 还不错
+const fruits = [&#39;apple&#39;, &#39;banana&#39;, &#39;cucumber&#39;];
+// 很好 - &quot;names&quot;暗示数组内容是字符串(strings)
+const fruitNames = [&#39;apple&#39;, &#39;banana&#39;, &#39;cucumber&#39;];
+// 优雅
+const fruits = [{
+    name: &#39;apple&#39;,
+    genus: &#39;malus&#39;
+}, {
+    name: &#39;banana&#39;,
+    genus: &#39;musa&#39;
+}, {
+    name: &#39;cucumber&#39;,
+    genus: &#39;cucumis&#39;
+}];
+</code></pre>
+<h2>Booleans</h2>
+<p>布尔类型只有2个值，<code>true</code>或者<code>false</code>。变量命名时使用『is』，『has』或者『can』作为前缀，将有助于读者理解变量的类型。</p>
+<pre><code class="language-js">// bad
+const open = true;
+const write = true;
+const fruit = true;
+
+// good
+const isOpen = true;
+const canWrite = true;
+const hasFruit = true;
+</code></pre>
+<p>当遇到predicate函数（该函数返回一个boolean值）时，在具名函数之后命名变量会有些烦人。</p>
+<pre><code class="language-js">const user = {
+  fruits: [&#39;apple&#39;]
+}
+const hasFruit = (user, fruitName) =&gt; {
+  user.fruits.includes(fruitName)
+}
+// 这个时候应该怎么命名这个boolean变量？
+const x = hasFruit(user, &#39;apple&#39;);
+</code></pre>
+<p>由于我们已经给函数名称加了个<code>has</code>的前缀，因此不能再以<code>hasProjectPermission</code>这种形式命名x这个boolean变量。在这种情况下，可以给<code>hasFruit</code>这个函数加上<code>check</code>或者<code>get</code>来修饰谓语(has)。</p>
+<pre><code class="language-js">const checkHasFruit = (user, fruitName) =&gt; {
+  user.fruits.includes(fruitName)
+}
+const hasFruit = checkHasFruit(user, &#39;apple&#39;);
+</code></pre>
+<h2>Numbers</h2>
+<p>至于数字类型，想想有哪些描述数字的词汇。诸如这些词汇，<code>maximum</code>,<code>minimum</code>,<code>total</code>.</p>
+<pre><code class="language-js">// bad
+const pugs = 3;
+// good
+const minPugs = 1;
+const maxPugs = 5;
+const totalPugs = 3;
+</code></pre>
+<h2>Functions</h2>
+<p>函数应当使用动词和名词相结合的方式命名，当该函数在对象原型上产生某种行为时，它的名字应当能够体现出这一点。<code>actionResource</code>就是一个值得借鉴的命名格式。例如：<code>getUser</code>。</p>
+<pre><code class="language-js">// bad
+userData(userId);
+userDataFunc(userId);
+totalOfItems(items);
+// good
+getUser(userId);
+calculateTotal(items);
+</code></pre>
+<p>通常情况下，我使用<code>to</code>作为函数名称的前缀来表示转换变量的值。</p>
+<pre><code class="language-js">// I like it
+toDollors(&#39;euros&#39;, 20);
+toUppercase(&#39;a string&#39;)
+</code></pre>
+<p>遍历子项的时候，我经常使用这种惯用的命名方式。当接收函数中的一个参数时，应当使用数组名称的单数形式。</p>
+<pre><code class="language-js">// bad
+const newFruits = fruits.map(x =&gt; {
+  doSomething(x);
+});
+// good
+const newFruits = fruits.map(fruit =&gt; {
+  doSomething(fruit)
+})
+</code></pre>
+<h2>回到开始</h2>
+<p>重构一下开头的那段代码</p>
+<pre><code class="language-js">const arrayToObject = (array, id, name) =&gt; {
+  const arrayList = Object.keys(array);
+  return arrayList.map((key) =&gt; {
+      return {
+          [id]: key,
+          [name]: array[key]
+      }
+  });
+}
+</code></pre>
+<h2>三省吾身</h2>
+<pre><code class="language-js">// 之前命名 =&gt; rsshub项目
+// 1. 获取文章列表
+const list = $(&#39;.con_list li h3&#39;)
+      .find(&#39;a&#39;)
+      .map((i, e) =&gt; $(e).attr(&#39;href&#39;))
+      .get();
+// 2. 对遍历出的文章地址链接发出请求
+const res = await got.get(itemUrl);
+
+// 改进命名
+const articleLists = $(&#39;.con_list li h3&#39;)
+      .find(&#39;a&#39;)
+      .map((i, list) =&gt; $(list).attr(&#39;href&#39;))
+      .get();
+
+const responseData = await got.get(itemUrl);
+</code></pre>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[reCAPTCHA验证码实在太反人类？快来试试这个自动跳过reCAPTCHA验证码的神器！]]></title>
+        <id>https://wangjb.appinn.me/posts/no-reCAPTCHA</id>
+        <link href="https://wangjb.appinn.me/posts/no-reCAPTCHA"/>
+        <updated>2025-12-20T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[一个跳过reCAPTCHA的工具。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=reCAPTCHA%E9%AA%8C%E8%AF%81%E7%A0%81%E5%AE%9E%E5%9C%A8%E5%A4%AA%E5%8F%8D%E4%BA%BA%E7%B1%BB%EF%BC%9F%E5%BF%AB%E6%9D%A5%E8%AF%95%E8%AF%95%E8%BF%99%E4%B8%AA%E8%87%AA%E5%8A%A8%E8%B7%B3%E8%BF%87reCAPTCHA%E9%AA%8C%E8%AF%81%E7%A0%81%E7%9A%84%E7%A5%9E%E5%99%A8%EF%BC%81&description=%E4%B8%80%E4%B8%AA%E8%B7%B3%E8%BF%87reCAPTCHA%E7%9A%84%E5%B7%A5%E5%85%B7%E3%80%82" alt="reCAPTCHA验证码实在太反人类？快来试试这个自动跳过reCAPTCHA验证码的神器！"></p><p>目前网络上越来越多使用验证码了，验证码的本意是阻止机器刷流量挤占服务器资源，这本来无可厚非；但是验证码已经变得越来越过分，别说机器人了，连人也经常没法辨认！这就相当烦了，特别是被广泛使用更多reCAPTCHA，要你辨认出图中的XX，点了一次又一次还是结果错误，简直抓狂！迫不得已之下，只能祭出这款自动跳过reCAPTCHA验证码的工具了。</p>
+<p>这款工具名叫“Buster”，它是一款开源的软件，具体形式是浏览器扩展。Buster在GitHub上有开源项目，大家可以下面的链接其GitHub页面，在页面中也可以找到Chrome、Firefox、Edge等浏览器的版本，找到对应的版本安装即可。</p>
+<p>Buster GitHub主页：<a href="https://github.com/dessant/buster">https://github.com/dessant/buster</a></p>
+<p>Buster的原理是利用reCAPTCHA的语音，来自动识别验证信息，并通过验证。它并不能完全跳过reCAPTCHA验证码，还是需要进行一个手动操作。在出现reCAPTCHA验证码后，点击通过语音验证，Buster就可以识别语音，自动完成验证了。</p>
+<p>总的来说，这是一个能大大改善上网体验的工具。</p>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[听播客——《人口老龄化所带来银发经济的崛起》]]></title>
+        <id>https://wangjb.appinn.me/posts/podcast_01</id>
+        <link href="https://wangjb.appinn.me/posts/podcast_01"/>
+        <updated>2022-07-13T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[播客笔记：从日本银发经济的成熟案例（电子设备、洗浴增值服务等），看人口老龄化背景下智慧养老产业的创业与投资机会。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=%E5%90%AC%E6%92%AD%E5%AE%A2%E2%80%94%E2%80%94%E3%80%8A%E4%BA%BA%E5%8F%A3%E8%80%81%E9%BE%84%E5%8C%96%E6%89%80%E5%B8%A6%E6%9D%A5%E9%93%B6%E5%8F%91%E7%BB%8F%E6%B5%8E%E7%9A%84%E5%B4%9B%E8%B5%B7%E3%80%8B&description=%E6%92%AD%E5%AE%A2%E7%AC%94%E8%AE%B0%EF%BC%9A%E4%BB%8E%E6%97%A5%E6%9C%AC%E9%93%B6%E5%8F%91%E7%BB%8F%E6%B5%8E%E7%9A%84%E6%88%90%E7%86%9F%E6%A1%88%E4%BE%8B%EF%BC%88%E7%94%B5%E5%AD%90%E8%AE%BE%E5%A4%87%E3%80%81%E6%B4%97%E6%B5%B4%E5%A2%9E%E5%80%BC%E6%9C%8D%E5%8A%A1%E7%AD%89%EF%BC%89%EF%BC%8C%E7%9C%8B%E4%BA%BA%E5%8F%A3%E8%80%81%E9%BE%84%E5%8C%96%E8%83%8C%E6%99%AF%E4%B8%8B%E6%99%BA%E6%85%A7%E5%85%BB%E8%80%81%E4%BA%A7%E4%B8%9A%E7%9A%84%E5%88%9B%E4%B8%9A%E4%B8%8E%E6%8A%95%E8%B5%84%E6%9C%BA%E4%BC%9A%E3%80%82" alt="听播客——《人口老龄化所带来银发经济的崛起》"></p><p>昨天在即刻上看到了 yiqin 发的一张图片关于——中国几个不同年龄段人口数量的分布<a href="%5Bpopulation.un.org%5D(https://population.un.org/wpp/Graphs/DemographicProfiles/Line/156)">^1</a>。</p>
+<p><img src="https://blog-assets.shenn.xyz/podcast01_1.png" alt="2-Population by broad age groups"></p>
+<p>刚好最近听的<a href="https://www.xiaoyuzhoufm.com/episode/6063bb8a8f1cdbcbb69ca417?s=eyJ1IjogIjVlZTJkY2ZlZTBkNjY0YTQ3Nzk0MjQ2ZSJ9">这期播客</a>讲的也是关于人口老龄化的问题。还有结合最新出台的一些政策——上海落户进一步放宽，谈谈自己的一些思考。</p>
+<h2>播客内容</h2>
+<ul>
+<li>日本社会针对老年群体的个性化服务<ul>
+<li>电子设备</li>
+<li>药品</li>
+<li>洗浴服务，裙带一些增值服务——染发，服饰，成人纸尿裤</li>
+<li>重视银发人群的品牌营销</li>
+</ul>
+</li>
+<li>创业公司的机会<ul>
+<li>内衣，浴缸针对高龄群体应该如何设计</li>
+</ul>
+</li>
+</ul>
+<h2>一些思考</h2>
+<ul>
+<li>社会问题如何成为新的创业机会</li>
+<li>智慧养老产业的投资机会</li>
+<li>银发经济，儿童经济的联动效应</li>
+</ul>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[写给开发者看的 Prompt Engineering]]></title>
+        <id>https://wangjb.appinn.me/posts/prompt_for_developer</id>
+        <link href="https://wangjb.appinn.me/posts/prompt_for_developer"/>
+        <updated>2023-06-20T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[本文介绍了 Prompt Engineering 的核心技巧，包括编写明确具体的说明（使用分隔符、结构化输出、条件检查、Few-shot 提示）以及给模型思考时间。同时分析了 ai-code-translator 和 gpt-engineer 两个开源项目中的 Prompt 应用实例。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=%E5%86%99%E7%BB%99%E5%BC%80%E5%8F%91%E8%80%85%E7%9C%8B%E7%9A%84+Prompt+Engineering&description=%E6%9C%AC%E6%96%87%E4%BB%8B%E7%BB%8D%E4%BA%86+Prompt+Engineering+%E7%9A%84%E6%A0%B8%E5%BF%83%E6%8A%80%E5%B7%A7%EF%BC%8C%E5%8C%85%E6%8B%AC%E7%BC%96%E5%86%99%E6%98%8E%E7%A1%AE%E5%85%B7%E4%BD%93%E7%9A%84%E8%AF%B4%E6%98%8E%EF%BC%88%E4%BD%BF%E7%94%A8%E5%88%86%E9%9A%94%E7%AC%A6%E3%80%81%E7%BB%93%E6%9E%84%E5%8C%96%E8%BE%93%E5%87%BA%E3%80%81%E6%9D%A1%E4%BB%B6%E6%A3%80%E6%9F%A5%E3%80%81Few-shot+%E6%8F%90%E7%A4%BA%EF%BC%89%E4%BB%A5%E5%8F%8A%E7%BB%99%E6%A8%A1%E5%9E%8B%E6%80%9D%E8%80%83%E6%97%B6%E9%97%B4%E3%80%82%E5%90%8C%E6%97%B6%E5%88%86%E6%9E%90%E4%BA%86+ai-code-translator+%E5%92%8C+gpt-engineer+%E4%B8%A4%E4%B8%AA%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E4%B8%AD%E7%9A%84+Prompt+%E5%BA%94%E7%94%A8%E5%AE%9E%E4%BE%8B%E3%80%82" alt="写给开发者看的 Prompt Engineering"></p><h2>开始之前</h2>
+<p>所谓 Prompt Engineering（提示工程），就是与 AI 进行有效沟通以<strong>实现预期效果</strong>的过程。至于为什么需要 PE 及其相关原理，并不是这篇文章的重点，感兴趣的同学可以看这篇文章[^1]。</p>
+<p>本文想要介绍在提示工程中，一些对于开发者有用的技巧[^2]，以及分析在开源项目中的具体应用。</p>
+<h2>一些技巧</h2>
+<h3>编写明确具体的说明</h3>
+<h4>使用分隔符</h4>
+<p>分隔符可以是任何形式，例如：</p>
+<pre><code class="language-js">&#39;&#39;&#39;text&#39;&#39;&#39;
+
+&quot;&quot;&quot;text&quot;&quot;&quot;
+
+&lt; text &gt;
+
+&lt;tag&gt;text&lt;/tag&gt;
+</code></pre>
+<pre><code class="language-js">const text = `
+通过提供尽可能明确和具体的说明来表达你希望模型执行的任务。
+这将引导模型朝着预期的输出方向发展，并减少收到无关或不正确回复的可能性。
+不要混淆编写清晰提示和编写简短提示。
+在大多数情况下，
+较长的提示可以为模型提供更明确的上下文，从而产生更详细和更具相关性的输出结果。
+`
+
+const prompt = `
+将三个双引号括起来的文本总结为一句话。
+&quot;&quot;&quot;${text}&quot;&quot;&quot;
+`
+</code></pre>
+<h4>结构化输出</h4>
+<p>比如输出形式为 JSON 或 HTML</p>
+<pre><code class="language-js">const prompt = `
+生成三本虚构类书籍的书名、作者和类型列表。 
+使用以下键以 JSON 格式提供：book_id、title、author、genre。
+`
+</code></pre>
+<h4>检查条件是否满足</h4>
+<pre><code class="language-js">const text = `
+泡一杯茶很容易！首先，需要烧一些水。 
+在水烧开的时候，拿一个杯子并把一个茶包放进去。 
+然后把开水倒在茶包上。 
+让它浸泡一会儿，茶就可以泡好了。 
+几分钟后，取出茶包。如果你喜欢，还可以加一些糖或牛奶。 
+就这样！你可以享受泡好的茶水了。
+`
+
+const prompt = `
+如果文本包含一系列说明，请按以下格式重新编写这些说明：
+
+步骤1 - ...
+步骤2 - ...
+...
+步骤N - ...
+
+如果文本不包含一系列说明，则仅写“未提供步骤”。
+
+&quot;&quot;&quot;${text}&quot;&quot;&quot;
+`
+</code></pre>
+<h4>「Few-shot」 提示</h4>
+<p>「Few-shot」提示[^3]是指向 AI 模型提供有限数量的示例，从而引导模型更好地执行任务。这是一种常用于训练大语言模型（LLMs）的技术。</p>
+<p>Few-shot prompting 的步骤如下：</p>
+<ol>
+<li><p>选择你想让模型生成响应的领域或主题。可以是一种文本类型、语言方式等。</p>
+</li>
+<li><p>为模型提供少量的示例（提示），以作为后续样例的条件。通常只需提供 2-5 个示例即可进行「few-shot」学习。</p>
+</li>
+<li><p>模型将分析提示中的模式、风格和结构。它将学习定义该领域响应的属性。</p>
+</li>
+<li><p>让模型在相同领域中生成新的响应。通过提示的条件化，它可以生成符合所需风格、结构等的响应。</p>
+</li>
+<li><p>评估响应并提供反馈以进一步改进模型。这可以是直接反馈给模型，也可以只是记录下一组提示生成的领域中需要改进的地方。</p>
+</li>
+</ol>
+<h3>给模型时间「思考」</h3>
+<h4>指定完成任务所需的步骤</h4>
+<pre><code class="language-js">const text = `
+在一个美丽的村庄里，有一对兄妹杰克和吉尔。一天他们出发去从山顶的井中取水，
+当他们欢快地唱着歌爬山时，不幸降临了——杰克被石头绊倒了，滚下山坡，吉尔也跟着摔了下来。 
+虽然受了轻伤，万幸两人还是平安回家了。尽管发生了不幸，但他们的冒险精神却丝毫没有减弱，他们将继续探索大自然。
+`
+
+// 示例
+const prompt = `
+执行以下操作：
+1-请使用一句话概括给出的文本内容。
+2-将摘要翻译成法语。
+3-列出法语摘要中的每个名称。
+4-输出一个包含以下键的 json 对象：french_summary，num_names。
+
+请使用换行符给出答案。
+
+文本：
+&quot;&quot;&quot;${text}&quot;&quot;&quot;
+`
+</code></pre>
+<h4>指示模型在决定之前先自行解决问题</h4>
+<pre><code class="language-js">const prompt = `
+你的任务是确定学生的解决方案是否正确。
+要解决问题，请执行以下操作：
+-首先，自己解决问题。
+-然后将你的解决方案与学生的解决方案进行比较，并评估学生的解决方案是否正确。
+在自己解决问题之前，请不要决定学生的解决方案是否正确。
+
+使用以下格式：
+
+问题：
+
+&quot;&quot;&quot;
+问题
+&quot;&quot;
+
+学生的解决方案：
+
+&quot;&quot;&quot;
+学生的解决方案
+&quot;&quot;&quot;
+
+实际解决方案：
+
+&quot;&quot;&quot;
+解决方案的步骤和您的解决方案在这里
+&quot;&quot;&quot;
+
+学生的解决方案是否与刚刚计算出的实际解决方案相同：
+
+&quot;&quot;
+是或否
+&quot;&quot;&quot;
+
+学生的成绩：
+
+&quot;&quot;&quot;
+正确或不正确
+&quot;&quot;&quot;
+
+问题：
+
+&quot;&quot;&quot;
+我正在建造一个太阳能电站，我需要帮助解决财务问题。
+-土地成本为每平方英尺100美元
+-我可以以每平方英尺250美元的价格购买太阳能电池板
+-我协商了一个维护合同，每年将花费固定的10万美元，以及额外的每平方英尺10美元
+请计算出第一年的总成本是多少。
+&quot;&quot;&quot;
+
+学生的解决方案：
+
+&quot;&quot;&quot;
+设x为安装面积（以平方英尺为单位）。
+成本：
+1.土地成本：100x
+2.太阳能电池板成本：250x
+3.维护成本：100,000+100x
+总成本：100x+250x+100,000+100x=450x+100,000
+&quot;&quot;&quot;
+
+实际解决方案：
+`
+</code></pre>
+<h2>他山之石</h2>
+<h3>ai-code-translator</h3>
+<p>这个项目[^4]可以在不同的编程语言环境下转换代码。使用到了前面提到过的一些技巧，如使用分隔符来指示输入和输出的编程语言、提供「Few-shot」提示等。</p>
+<pre><code class="language-js">const prompt = `
+You are an expert programmer in all programming languages. Translate the &quot;${inputLanguage}&quot; code to &quot;${outputLanguage}&quot; code. Do not include \`\`\`.
+  
+      Example translating from JavaScript to Python:
+  
+      JavaScript code:
+      for (let i = 0; i &lt; 10; i++) {
+        console.log(i);
+      }
+  
+      Python code:
+      for i in range(10):
+        print(i)
+      
+      ${inputLanguage} code:
+      ${inputCode}
+
+      ${outputLanguage} code (no \`\`\`):
+     `;
+`
+</code></pre>
+<h3>gpt-engineer</h3>
+<p>我们再来看一个更复杂的项目——基于描述来生成整个完整代码库，其中[^5]使用了大量的 propmts。下面列举部分步骤，来分析该步骤中使用到的 prompt。</p>
+<pre><code class="language-mermaid">flowchart TD
+    A[Clarify] --&gt;|main prompt + clarify| B(Gen_spec)
+    B --&gt; C[Respec]
+    C --&gt;|generate unit tests| D[gen_unit_tests]
+    C --&gt;E[gen_clarify_code]
+    C --&gt;F[gen_code]
+</code></pre>
+<pre><code class="language-js">const prompt_on_respec = `
+You are a pragmatic principal engineer at Google.
+You have been asked to review a specification for a new feature by a previous version of yourself
+
+You have been asked to give feedback on the following:
+- Is there anything that might not work the way intended by the instructions?
+- Is there anything in the specification missing for the program to work as expected?
+- Is there anything that can be simplified without significant drawback?
+
+You are asked to make educated assumptions for each unclear item.
+For each of these, communicate which assumptions you&#39;ll make when implementing the feature.
+
+Think step by step to make sure we don&#39;t miss anything.
+`
+</code></pre>
+<pre><code class="language-js">const prompt_on_gen_code = `
+Please now remember the steps:
+
+Think step by step and reason yourself to the right decisions to make sure we get it right.
+First lay out the names of the core classes, functions, methods that will be necessary, As well as a quick comment on their purpose.
+
+Then you will output the content of each file including ALL code.
+Each file must strictly follow a markdown code block format, where the following tokens must be replaced such that
+FILENAME is the lowercase file name including the file extension,
+LANG is the markup code block language for the code&#39;s language, and CODE is the code:
+
+FILENAME
+CODE
+
+Please note that the code should be fully functional. No placeholders.
+
+You will start with the &quot;entrypoint&quot; file, then go to the ones that are imported by that file, and so on.
+Follow a language and framework appropriate best practice file naming convention.
+Make sure that files contain all imports, types etc. The code should be fully functional. Make sure that code in different files are compatible with each other.
+Before you finish, double check that all parts of the architecture is present in the files.
+`
+</code></pre>
+<p>[^1]: <a href="https://typefully.com/DanHollick/yA3ppZC">How ChatGPT works: a deep dive</a>
+[^2]: 本文的主要示例来自 <a href="https://learn.deeplearning.ai/chatgpt-prompt-eng/">deeplearning.ai</a>
+[^3]: <a href="https://www.promptingguide.ai/techniques/fewshot">Few-Shot Prompting</a>
+[^4]: <a href="https://github.com/mckaywrigley/ai-code-translator/tree/main">ai-code-translator</a>
+[^5]: <a href="https://github.com/AntonOsika/gpt-engineer">gpt-engineer</a></p>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[重构博客：从 xLog 回归 Fumadocs]]></title>
+        <id>https://wangjb.appinn.me/posts/refactor_blog</id>
+        <link href="https://wangjb.appinn.me/posts/refactor_blog"/>
+        <updated>2026-01-17T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[记录将个人博客从 xLog 迁移至基于 Next.js 和 Fumadocs 的自建方案的过程，探索极致的开发者体验。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=%E9%87%8D%E6%9E%84%E5%8D%9A%E5%AE%A2%EF%BC%9A%E4%BB%8E+xLog+%E5%9B%9E%E5%BD%92+Fumadocs&description=%E8%AE%B0%E5%BD%95%E5%B0%86%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E4%BB%8E+xLog+%E8%BF%81%E7%A7%BB%E8%87%B3%E5%9F%BA%E4%BA%8E+Next.js+%E5%92%8C+Fumadocs+%E7%9A%84%E8%87%AA%E5%BB%BA%E6%96%B9%E6%A1%88%E7%9A%84%E8%BF%87%E7%A8%8B%EF%BC%8C%E6%8E%A2%E7%B4%A2%E6%9E%81%E8%87%B4%E7%9A%84%E5%BC%80%E5%8F%91%E8%80%85%E4%BD%93%E9%AA%8C%E3%80%82" alt="重构博客：从 xLog 回归 Fumadocs"></p><p>import { Callout } from &#39;fumadocs-ui/components/callout&#39;;
+import { Tab, Tabs } from &#39;fumadocs-ui/components/tabs&#39;;</p>
+<Callout type="info">
+本项目已开源，欢迎 Star：[GitHub 仓库链接](https://github.com/occupy5/blog)
+</Callout>
+
+
+<h2>前言</h2>
+<p>写博客这件事，算起来已经进行了快十年。</p>
+<p>最早是在 2017 年，使用 <strong>Hexo</strong> 搭建了第一个个人网站，那时候最大的乐趣就是魔改各种主题配置和折腾插件。后来到了 2023 年，为了探索去中心化写作，迁移到了链上博客 <strong>xLog</strong>。</p>
+<p>遗憾的是，现在 xLog 已经停止维护。于是，我决定开启新一轮的“造轮子”工程——重构博客。</p>
+<h2>遇见 Fumadocs</h2>
+<p>关于博客的选型有太多太多的方案，我最终选择了 <a href="https://www.fumadocs.dev/docs">Fumadocs</a>。它本质上是一个基于 Next.js 的文档框架，但其<strong>极高的定制性</strong>和优秀的<strong>交互设计</strong>，非常适合用来构建一个“开发者友好”的技术博客。</p>
+<h3>1. 极致的代码阅读体验</h3>
+<p>Fumadocs 深度集成了 <strong>Shiki</strong> 和 <strong>Twoslash</strong>，带来了 IDE 级别的阅读体验。</p>
+<h4>Shiki Transformers</h4>
+<pre><code class="language-tsx">// highlight a line
+&lt;div&gt;Hello World&lt;/div&gt; // [!code highlight]
+
+// highlight a word
+// [!code word:Fumadocs]
+&lt;div&gt;Fumadocs&lt;/div&gt;
+
+// diff styles
+console.log(&#39;hewwo&#39;); // [!code --]
+console.log(&#39;hello&#39;); // [!code ++]
+
+// focus
+return new ResizeObserver(() =&gt; {}) // [!code focus]
+</code></pre>
+<h4>Twoslash 静态类型检查</h4>
+<p>不再是简单的颜色高亮，现在支持静态类型检查。将鼠标悬停在下方的 <code>user</code> 变量上，可以直接查看 TypeScript 的类型定义。</p>
+<pre><code class="language-ts">interface User {
+  id: number;
+  username: string;
+  role: &#39;admin&#39; | &#39;user&#39;;
+}
+
+const user: User = {
+  id: 1,
+  username: &quot;Fumadocs&quot;,
+  role: &quot;admin&quot;,
+};
+
+// 悬停在 user 上查看类型推导
+console.log(user.role);
+</code></pre>
+<h3>2. 代码驱动的可视化</h3>
+<p>得益于 MDX 的强大能力，图表与公式不再依赖截图，而是成为可维护的代码片段。</p>
+<h4>Mermaid 流程图</h4>
+<p>直接在 Markdown 中描述业务逻辑，对于解释技术架构非常有用。</p>
+<pre><code class="language-mermaid">graph LR
+    subgraph clients [Client Layer]
+    A([Web App]) --&gt; B[API Gateway]
+    C([Mobile App]) --&gt; B
+end
+    subgraph services [Service Layer]
+    B --&gt; D[Auth Service]
+    B --&gt; E[User Service]
+    B --&gt; F[Order Service]
+end
+    subgraph data [Data Layer]
+    D --&gt; G[(Auth DB)]
+    E --&gt; H[(User DB)]
+    F --&gt; I[(Order DB)]
+    F --&gt; J([Message Queue])
+end
+</code></pre>
+<h4>KaTeX 数学公式</h4>
+<p>原生支持复杂的数学符号渲染，保持排版的一致性与优雅。</p>
+<p>Attention 机制公式：</p>
+<p>$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$</p>
+<h3>3. 极简设计</h3>
+<p>摒弃视觉噪音，<strong>内容优先</strong>是唯一原则。</p>
+<ul>
+<li><strong>字体</strong>：正文采用 <strong>Geist Sans</strong>，代码采用 <strong>JetBrains Mono</strong>。几何无衬线体与等宽字体的组合，保证了长时间阅读的舒适度。</li>
+<li><strong>深色模式</strong>：基于 <strong>Tailwind CSS v4</strong> 的语义化配置，实现了丝滑的明暗切换。</li>
+<li><strong>移动优先</strong>：对于移动端视口进行了适配，保证在任何设备上都能获得一致的阅读体验。</li>
+</ul>
+<h3>4. 技术栈</h3>
+<table>
+<thead>
+<tr>
+<th>核心组件</th>
+<th>技术选型</th>
+<th>优势</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>框架</strong></td>
+<td>Next.js 16</td>
+<td>App Router + RSC 带来的极致首屏性能</td>
+</tr>
+<tr>
+<td><strong>运行时</strong></td>
+<td>Bun</td>
+<td>依赖安装与冷启动速度比 Node.js 快数倍</td>
+</tr>
+<tr>
+<td><strong>规范</strong></td>
+<td>Biome</td>
+<td>单一工具链替代 ESLint + Prettier，速度飞快</td>
+</tr>
+<tr>
+<td><strong>搜索</strong></td>
+<td>Fumadocs Search</td>
+<td>纯本地全文搜索，无外部依赖</td>
+</tr>
+</tbody></table>
+<h3>沉浸式写作</h3>
+<p>建议在 .vscode/settings.json 中添加以下配置：</p>
+<pre><code class="language-json">&quot;[mdx]&quot;: {
+        &quot;editor.lineHeight&quot;: 28,// [!code ++]
+        &quot;editor.wordWrap&quot;: &quot;wordWrapColumn&quot;,// [!code ++]
+        &quot;editor.wordWrapColumn&quot;: 85,// [!code ++]
+
+        &quot;editor.lineNumbers&quot;: &quot;off&quot;,// [!code ++]
+        &quot;editor.minimap.enabled&quot;: false,// [!code ++]
+        &quot;editor.glyphMargin&quot;: false, // [!code ++]
+        &quot;editor.renderWhitespace&quot;: &quot;none&quot;,// [!code ++]
+    },
+</code></pre>
+<h2>结语</h2>
+<p>折腾博客的尽头是回归内容。</p>
+<p>Fumadocs 提供了一个足够现代、高性能且低维护成本的地基。接下来的日子，希望自己多写点东西。</p>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[优化搜索结果去广告的油猴脚本]]></title>
+        <id>https://wangjb.appinn.me/posts/search</id>
+        <link href="https://wangjb.appinn.me/posts/search"/>
+        <updated>2025-12-19T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[一个优化搜索结果去广告的油猴脚本。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=%E4%BC%98%E5%8C%96%E6%90%9C%E7%B4%A2%E7%BB%93%E6%9E%9C%E5%8E%BB%E5%B9%BF%E5%91%8A%E7%9A%84%E6%B2%B9%E7%8C%B4%E8%84%9A%E6%9C%AC&description=%E4%B8%80%E4%B8%AA%E4%BC%98%E5%8C%96%E6%90%9C%E7%B4%A2%E7%BB%93%E6%9E%9C%E5%8E%BB%E5%B9%BF%E5%91%8A%E7%9A%84%E6%B2%B9%E7%8C%B4%E8%84%9A%E6%9C%AC%E3%80%82" alt="优化搜索结果去广告的油猴脚本"></p><h2>功能：</h2>
+<ul>
+<li>去掉百度、搜狗、谷歌搜索结果的重定向，回归为网站的原始网址</li>
+<li>添加百度、搜狗、谷歌搜索结果中Favicon显示效果</li>
+<li>百度和谷歌搜索页面可以设置为单列、双列模式</li>
+<li>支持自动翻页</li>
+<li>可以去广告</li>
+</ul>
+<p><strong>默认相关功能关闭，需要的请手动开启</strong></p>
+<h2>实际效果</h2>
+<img src="https://pic.wangjb.eu.cc/file/WKY29Jqt.png" alt="image.png" />
+
+<img src="https://pic.wangjb.eu.cc/file/TvZHWMJe.png" alt="image-1.png" />
+
+<h2>下载</h2>
+<p><a href="https://scriptcat.org/zh-CN/script-show-page/3002">https://scriptcat.org/zh-CN/script-show-page/3002</a></p>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[terminal折腾记之Mac篇]]></title>
+        <id>https://wangjb.appinn.me/posts/terminal</id>
+        <link href="https://wangjb.appinn.me/posts/terminal"/>
+        <updated>2018-10-20T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[本文记录了在 Mac 下对终端进行美化和功能增强的过程。通过配置 iTerm2、oh-my-zsh 以及 powerlevel9k 主题，配合自动补全和语法高亮插件，打造了一个既美观又高效的终端环境，并解决了 VS Code 中的字体适配问题。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=terminal%E6%8A%98%E8%85%BE%E8%AE%B0%E4%B9%8BMac%E7%AF%87&description=%E6%9C%AC%E6%96%87%E8%AE%B0%E5%BD%95%E4%BA%86%E5%9C%A8+Mac+%E4%B8%8B%E5%AF%B9%E7%BB%88%E7%AB%AF%E8%BF%9B%E8%A1%8C%E7%BE%8E%E5%8C%96%E5%92%8C%E5%8A%9F%E8%83%BD%E5%A2%9E%E5%BC%BA%E7%9A%84%E8%BF%87%E7%A8%8B%E3%80%82%E9%80%9A%E8%BF%87%E9%85%8D%E7%BD%AE+iTerm2%E3%80%81oh-my-zsh+%E4%BB%A5%E5%8F%8A+powerlevel9k+%E4%B8%BB%E9%A2%98%EF%BC%8C%E9%85%8D%E5%90%88%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8%E5%92%8C%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E6%8F%92%E4%BB%B6%EF%BC%8C%E6%89%93%E9%80%A0%E4%BA%86%E4%B8%80%E4%B8%AA%E6%97%A2%E7%BE%8E%E8%A7%82%E5%8F%88%E9%AB%98%E6%95%88%E7%9A%84%E7%BB%88%E7%AB%AF%E7%8E%AF%E5%A2%83%EF%BC%8C%E5%B9%B6%E8%A7%A3%E5%86%B3%E4%BA%86+VS+Code+%E4%B8%AD%E7%9A%84%E5%AD%97%E4%BD%93%E9%80%82%E9%85%8D%E9%97%AE%E9%A2%98%E3%80%82" alt="terminal折腾记之Mac篇"></p><p>作为除了编辑器，浏览器之外，每天接触<strong>第二多</strong>的东西——终端。是要来好好折腾一番了。之前，我就下载了oh-my-zsh。但是使用的一直是它的默认主题——robbyrussell。这个主题，其实很不错了，相比于自带的zsh已经是非常的简洁美观。可是身为一个前端er,不折腾怎么能行了🌊。</p>
+<h2>折腾前的准备</h2>
+<ol>
+<li><a href="https://www.iterm2.com/downloads.html">iTerm2</a></li>
+<li><a href="https://github.com/robbyrussell/oh-my-zsh">oh-my-zsh</a></li>
+<li><a href="https://github.com/powerline/fonts">powerline font</a></li>
+</ol>
+<p>具体的安装步骤，就不再赘述了，大家可以去文档里查看。</p>
+<h2>需要做的配置</h2>
+<h3>iTerm颜色主题</h3>
+<p>这个<a href="https://github.com/mbadolato/iTerm2-Color-Schemes">主题库</a>包含了170+种主题。可以把文件下载到本地，然后导入到color presets中就好了（使用快捷键cmd + i）。</p>
+<h3>zsh主题</h3>
+<p>我使用的是<a href="https://github.com/bhilburn/powerlevel9k">powerlevel9k</a>,它可以对终端进行进一步的个性化定制，就像这样🌰。</p>
+<h4>安装powerlevel9k</h4>
+<ol>
+<li>clone主题的仓库地址</li>
+</ol>
+<pre><code class="language-shell">$ git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
+</code></pre>
+<ol start="2">
+<li>在.zsh中设定主题</li>
+</ol>
+<pre><code class="language-shell">ZSH_THEME=&quot;powerlevel9k/powerlevel9k&quot;
+</code></pre>
+<h2>zsh相关插件</h2>
+<ul>
+<li><a href="https://github.com/zsh-users/zsh-autosuggestions">zsh-autosuggestions</a></li>
+<li><a href="https://github.com/zsh-users/zsh-syntax-highlighting">zsh-syntax-highlighting</a></li>
+</ul>
+<p>这是我推荐的两个插件，当然，你也可以添加一些其他的插件。具体<a href="https://github.com/zsh-users">地址</a>在这里。</p>
+<h3>安装zsh插件的两种方式</h3>
+<h4>oh-my-zsh方式</h4>
+<ol>
+<li>clone插件的仓库地址</li>
+</ol>
+<pre><code class="language-shell">git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+</code></pre>
+<ol start="2">
+<li>在~/.zshrc中找到plugins,添加这个插件</li>
+</ol>
+<pre><code class="language-shell">plugins = (
+    git
+    rails
+    zsh-autosuggestions
+)
+</code></pre>
+<h4>.zshrc方式</h4>
+<ol>
+<li>同上</li>
+<li>在.zshrc中添加一行</li>
+</ol>
+<pre><code class="language-shell">source ./zsh-syntax-highlighting/zsh-syntax-highlighting.
+</code></pre>
+<h2>其他</h2>
+<h3>隐藏用户信息</h3>
+<p>打开终端后会发现，总是有一段长长的用户信息前缀。感觉有些多余，我们如何来隐藏它呢。记得之前使用robbyrussell主题时是没有的，所以很有可能是主题文件的原因。于是打开powerlevel9k.zsh-theme文件（注意看上文clone的路径）。</p>
+<pre><code class="language-shell"># Note that if $DEFAULT_USER is not set, this prompt segment will always print
+</code></pre>
+<p>所以解决的方法就是在.zshrc中设置默认用户名就好了。</p>
+<h3>vs code配置</h3>
+<p>完成以上步骤之后，一个颜值又高又好用的terminal就此诞生了。让我们打开vs code，撸起袖子加油干吧。等下，乱码又是什么桂？原来是忘记设定终端字体了，打开settings.json文件，把下面这行加上去就好了。</p>
+<pre><code class="language-shell">&quot;terminal.integrated.fontFamily&quot;: &quot;Meslo LG M（你使用的字体） for Powerline&quot;
+</code></pre>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[terminal折腾记之windows篇]]></title>
+        <id>https://wangjb.appinn.me/posts/terminalWin</id>
+        <link href="https://wangjb.appinn.me/posts/terminalWin"/>
+        <updated>2020-04-08T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Windows Terminal 配置指南：集成 Oh My Posh、iTerm 配色与 Powerline 字体，打造舒适的 PowerShell 开发环境。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=terminal%E6%8A%98%E8%85%BE%E8%AE%B0%E4%B9%8Bwindows%E7%AF%87&description=Windows+Terminal+%E9%85%8D%E7%BD%AE%E6%8C%87%E5%8D%97%EF%BC%9A%E9%9B%86%E6%88%90+Oh+My+Posh%E3%80%81iTerm+%E9%85%8D%E8%89%B2%E4%B8%8E+Powerline+%E5%AD%97%E4%BD%93%EF%BC%8C%E6%89%93%E9%80%A0%E8%88%92%E9%80%82%E7%9A%84+PowerShell+%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E3%80%82" alt="terminal折腾记之windows篇"></p><p>最近把开发环境迁移到了 windows 上，久违的 windows 还是给我带来了不少的惊喜。简单的折腾[^1]之后，终端的使用体验已经非常接近 Mac 了。
+这篇文章作为之前写过的一篇文章——<a href="https://blog.5bang.top/2018/10/20/terminal/">《terminal折腾记之Mac篇》</a>的姊妹篇。实现思路上大都相似。</p>
+<h2>准备</h2>
+<ol>
+<li><a href="https://github.com/microsoft/terminal">windows-terminal</a></li>
+<li><a href="https://github.com/mbadolato/iTerm2-Color-Schemes/tree/master/windowsterminal">iTerm for windows</a></li>
+<li><a href="https://github.com/JanDeDobbeleer/oh-my-posh">oh-my-posh</a></li>
+<li><a href="https://github.com/powerline/fonts">powerline font</a></li>
+</ol>
+<h2>配置</h2>
+<h3>terminal 配置</h3>
+<h4>profiles.json 结构</h4>
+<p>复制 iTrem 上的颜色主题，导入到 <code>schemes</code> 数组中。然后在 <code>list</code> 中，使用这个键值 <code>&quot;colorScheme&quot;:&quot;lovelace&quot;</code>，生效主题颜色。当然你也可以把它写到 <code>defaults</code> 中，这样就会覆盖 <code>list</code> 中配置的所有终端。</p>
+<h3>powershell 配置</h3>
+<ol>
+<li>安装 oh-my-posh</li>
+</ol>
+<pre><code class="language-bash"># 安装命令
+Install-Module posh-git -Scope CurrentUser 
+Install-Module oh-my-posh -Scope CurrentUser
+</code></pre>
+<ol start="2">
+<li>下载 powerline font</li>
+<li>配置 powershell_profile.ps1</li>
+</ol>
+<pre><code class="language-bash"># 如果之前没有配置文件，就新建一个 PowerShell 配置文件
+if (!(Test-Path -Path $PROFILE )) { New-Item -Type File -Path $PROFILE -Force }
+# 打开配置文件
+vi $PROFILE
+# 添加内容
+Import-Module posh-git 
+Import-Module oh-my-posh 
+# 设置主题
+Set-Theme Paradox
+</code></pre>
+<ol start="4">
+<li>在powershell中使用vim</li>
+</ol>
+<pre><code class="language-bash"># 使用git内置的vim
+</code></pre>
+<h3>vs code 配置</h3>
+<p>如果之前在 vs code 中使用等宽字体的话，打开终端会发现命令提示符出现乱码。这时候要把终端的字体设为powerline，就像这样：</p>
+<pre><code class="language-bash">&quot;terminal.integrated.fontFamily&quot;: &quot;Meslo LG M（你使用的字体） for Powerline&quot;
+</code></pre>
+<h2>备份</h2>
+<p>现在，我们来整理一下整个改造终端的过程更改了哪些文件：</p>
+<ul>
+<li>profiles.json</li>
+<li>powershell_profile.ps1</li>
+<li>setting.json</li>
+</ul>
+<p>备份了这三个文件，就能在任何一台windows设备上还原有颜同时又很强大的终端了。</p>
+<h2>最后</h2>
+<p>其实到了这里，只能说是实现 windows 下 terminal 的基本改造。还有很多的部分没有去折腾，比如：</p>
+<ul>
+<li>快捷键的绑定</li>
+<li>WSL相关</li>
+<li>编写自己的主题</li>
+<li>tricks and tips</li>
+</ul>
+<p>更多的细节以及使用技巧，可以在<a href="https://github.com/microsoft/terminal/blob/master/doc/user-docs/index.md">官方文档</a>中找到。</p>
+<p>[^1]: 系统环境须在 Windows 10 (build<code>1903</code>)以上</p>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[再谈输入 —— 《打造第二大脑》]]></title>
+        <id>https://wangjb.appinn.me/posts/think_input</id>
+        <link href="https://wangjb.appinn.me/posts/think_input"/>
+        <updated>2023-05-19T12:00:00.000Z</updated>
+        <summary type="html"><![CDATA[读《打造第二大脑》后的实践总结：如何平衡算法推荐与主动订阅，以及如何利用 CODE 方法构建从“输入”到“输出”的闭环。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=%E5%86%8D%E8%B0%88%E8%BE%93%E5%85%A5+%E2%80%94%E2%80%94+%E3%80%8A%E6%89%93%E9%80%A0%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91%E3%80%8B&description=%E8%AF%BB%E3%80%8A%E6%89%93%E9%80%A0%E7%AC%AC%E4%BA%8C%E5%A4%A7%E8%84%91%E3%80%8B%E5%90%8E%E7%9A%84%E5%AE%9E%E8%B7%B5%E6%80%BB%E7%BB%93%EF%BC%9A%E5%A6%82%E4%BD%95%E5%B9%B3%E8%A1%A1%E7%AE%97%E6%B3%95%E6%8E%A8%E8%8D%90%E4%B8%8E%E4%B8%BB%E5%8A%A8%E8%AE%A2%E9%98%85%EF%BC%8C%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8+CODE+%E6%96%B9%E6%B3%95%E6%9E%84%E5%BB%BA%E4%BB%8E%E2%80%9C%E8%BE%93%E5%85%A5%E2%80%9D%E5%88%B0%E2%80%9C%E8%BE%93%E5%87%BA%E2%80%9D%E7%9A%84%E9%97%AD%E7%8E%AF%E3%80%82" alt="再谈输入 —— 《打造第二大脑》"></p><blockquote>
+<p>『太多的资讯就如同太少的资讯一样，都是一种对理解力的阻碍。换句话说，现代的媒体正以压倒性的泛滥资讯阻碍了我们的理解力』</p>
+</blockquote>
+<h2>开始之前</h2>
+<p>很早就想写一篇关于自己如何做「信息管理」的文章了。前段时间看到 Twitter 上 Randy 的<a href="https://twitter.com/randyloop/status/1657206677509398528">分享</a>以及读了《打造第二大脑》这本书。我也再次思考自己应该如何来做信息管理。</p>
+<p>对我而言，做好信息管理主要有两个目的：</p>
+<ol>
+<li>提升效率：在工作或生活中遇到难题时，能快速找到既有的解决方案</li>
+<li>激发灵感：通过旧知识的碰撞，产生更多有趣的新想法</li>
+</ol>
+<h2>输入</h2>
+<p>目前我的信息输入主要分为三类：算法推荐的信息流、主动订阅的 RSS，以及读书和听播客。</p>
+<h3>信息流</h3>
+<ul>
+<li>Twitter</li>
+<li>GitHub</li>
+<li>Youtube</li>
+<li>即刻</li>
+</ul>
+<p>我在 Twitter 上关注了很多很棒的开发者，设计师，还有一些有趣产品的官推。从这些关注列表中可以看到他们最新的观点，又出现了哪些新的技术和产品。我把 Likes 当做收藏夹来使用，看到感兴趣的内容就会 like 一下。此外我还建了一些 Lists，这个功能算是一个分类吧，目前我建立的几个大类是 AI，FE，Web3。</p>
+<p>GitHub 其实也有信息流 —— 「For you」，这个可能是很多人不太用到的。从这里可以看到关注的开发者都 star 了哪些 repo，此外它也会推荐一些最近比较流行的项目。我会把 star 的 repo 进行分类，你可以在<a href="https://github.com/occupy5?tab=stars">这里</a>看到。</p>
+<p>Youtube 上主要是浏览订阅的一些频道。内容其实就比较广泛了，技术，生活，娱乐都有。这个上面也时常能够发现高质量的内容，比如加州伯克利大学的 <a href="https://www.youtube.com/@blockchain-web3moocs635">Web3 Mooc</a>，街头摄影师 <a href="https://www.youtube.com/@KaiManWong">Kai W</a>，乒乓球博主 <a href="https://www.youtube.com/@AdamBobrow">Adam</a> 等等。</p>
+<p>即刻是一个很不错的中文社区，Web3 和 AI 的内容质量都还不错，也会有一些活跃的独立开发者和投资人。不过最新的科技资讯还是稍微滞后于 twitter。</p>
+<p>信息流最主要的特点就是——<strong>算法推荐</strong>，但它是一把双刃剑，有的时候会带来惊喜，发现更多有意思的人。另一方面则是很容易产生『信息过载』，用户总是一遍又一遍的刷新 APP。</p>
+<h3>RSS</h3>
+<p>RSS 订阅是我常用的另一种获取信息的方式。主要用来订阅一些技术博客，当然也有一些其他主题的订阅源。如设计相关的，<strong>Behance</strong>，<strong>Design-Milk</strong>。科技相关的，<strong>9to5Mac</strong>，<strong>The Verge</strong>。Web3 相关的，<strong>Weekly in Etherum</strong>，<strong>Foresight news</strong> 等。</p>
+<p>RSS 和信息流相比，我认为优势在于文章的质量会更高一些 —— 因为订阅源是经过自己筛选之后才放到阅读器中的。我会定期刷新阅读器，来获取这些高质量的信息输入。</p>
+<h3>看书和听播客</h3>
+<p>如果想要更加系统的学习一门知识，我认为看书还是最好的学习方式。当然阅读完一本专业书是一件很困难的事情。因为大部分的情况下，Google（或许现在可以直接问 ChatGPT）或看文档就能解决问题。很少有人会再去花费大量的时间搞懂问题的来龙去脉。</p>
+<p>播客的优势在于，获取到的是第一手的信息。比如我想了解 Sam 对未来 AI 发展的一些观点，去听相关的播客会比看相关媒体总结的文章可信度更高。</p>
+<h2>CODE 方法</h2>
+<p>CODE 方法是《打造第二大脑》这本书中的的核心内容。下面谈谈我自己的一些实践。</p>
+<table>
+<thead>
+<tr>
+<th align="center"><img src="https://blog-assets.shenn.xyz/think_input.png" alt="CODE"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><em>CODE 方法</em></td>
+</tr>
+</tbody></table>
+<ul>
+<li>C(Capture) -&gt; 获取能引发共鸣的信息</li>
+<li>O(Organize) -&gt; 组织分类</li>
+<li>D(Distill) -&gt; 标注精髓部分</li>
+<li>E(Express) -&gt; 展示成果</li>
+</ul>
+<p>对于「Capture」部分，主要就是上面提到过的几种方式，还有就是我会使用 <strong>Web Clipper</strong> 这个插件剪切网页文章到语雀知识库。然后在语雀知识库中进行「Organize」—— 通过<strong>文件夹分类</strong>的方式。再者就是在 Obsidian 上对<strong>写摘要</strong>完成「Distill」，最后就是写博客，发推特，发即刻来展示成果。</p>
+<p>完成这些步骤就走完了 CODE 方法完整的一套流程。当然在具体实践中要根据自己的情况做调整，每个人使用的工具也都不尽相同。对于我来讲，D 和 E 做的还不够，也即是「输出」这个部分。</p>
+<h2>想法</h2>
+<p>做好信息管理，在学习新的技术或是解决不曾遇到过的问题时，不必要从零开始，而是建立在已有的知识库上。接下来，大语言模型加上个人知识库可能会让打造第二大脑的过程更加简单。但是无论方式如何，我们最应该关注的还是「看到过的信息，以后会去向哪里」。我想用之前看到过的关于 TypeScript 的一句话作为结尾。</p>
+<blockquote>
+<p>As you write TypeScript, you need to think about where you want your contracts to be, and what needs to be done in order to meet them.</p>
+</blockquote>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[关灯看视频 – 观看视频时自动调暗页面]]></title>
+        <id>https://wangjb.appinn.me/posts/turnoffthelights</id>
+        <link href="https://wangjb.appinn.me/posts/turnoffthelights"/>
+        <updated>2025-12-21T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[ 关灯看视频是一款能够在浏览器上播放视频的时候，自动调暗视频以外区域亮度，让你有一种置身于电影院中观影的感觉。支持众多浏览器。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=%E5%85%B3%E7%81%AF%E7%9C%8B%E8%A7%86%E9%A2%91+%E2%80%93+%E8%A7%82%E7%9C%8B%E8%A7%86%E9%A2%91%E6%97%B6%E8%87%AA%E5%8A%A8%E8%B0%83%E6%9A%97%E9%A1%B5%E9%9D%A2&description=+%E5%85%B3%E7%81%AF%E7%9C%8B%E8%A7%86%E9%A2%91%E6%98%AF%E4%B8%80%E6%AC%BE%E8%83%BD%E5%A4%9F%E5%9C%A8%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%8A%E6%92%AD%E6%94%BE%E8%A7%86%E9%A2%91%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8C%E8%87%AA%E5%8A%A8%E8%B0%83%E6%9A%97%E8%A7%86%E9%A2%91%E4%BB%A5%E5%A4%96%E5%8C%BA%E5%9F%9F%E4%BA%AE%E5%BA%A6%EF%BC%8C%E8%AE%A9%E4%BD%A0%E6%9C%89%E4%B8%80%E7%A7%8D%E7%BD%AE%E8%BA%AB%E4%BA%8E%E7%94%B5%E5%BD%B1%E9%99%A2%E4%B8%AD%E8%A7%82%E5%BD%B1%E7%9A%84%E6%84%9F%E8%A7%89%E3%80%82%E6%94%AF%E6%8C%81%E4%BC%97%E5%A4%9A%E6%B5%8F%E8%A7%88%E5%99%A8%E3%80%82" alt="关灯看视频 – 观看视频时自动调暗页面"></p><p>关灯看视频是一款能够在浏览器上播放视频的时候，自动调暗视频以外区域亮度，让你有一种置身于电影院中观影的感觉。支持众多浏览器。</p>
+<img src="https://pic.wangjb.eu.cc/file/aX7hBjsB.jpg" alt="image-1.jpg" width="100%" />
+
+<p>暗色主题已经征服全世界了，一些视频网站已经自带关灯模式了。但还有一些网站，比如YouTube，就滞后一些，还不支持关灯模式。</p>
+<p>于是可以先用扩展顶上，只需一键，就能在看在线视频的时候，非全屏状态下关灯、免打扰看视频。</p>
+<p>关灯看视频 这个浏览器扩展，它能降低页面亮度，突出显示视频。</p>
+<p>支持大多数视频，并且还有一些有趣的功能。</p>
+<p>比如：</p>
+<pre><code>自动高清：自动将视频调整至高清画质
+自动宽屏：自动在最宽模式播放视频
+自动播放：按下播放按钮后自动关灯
+淡入淡出：逐渐开关灯
+</code></pre>
+<p>自动播放功能比较全面，支持黑白名单，让一些网站自动，一些网站不自动。</p>
+<p>关灯看视频的官网在这里<a href="https://www.turnoffthelights.com/zh-cn/">在这里</a>，感兴趣的可以自己去体验下。</p>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[动手实现一个vue分页组件]]></title>
+        <id>https://wangjb.appinn.me/posts/vue_component01</id>
+        <link href="https://wangjb.appinn.me/posts/vue_component01"/>
+        <updated>2019-07-30T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[本文记录了实现一个 Vue 分页组件的全过程，涵盖自定义页码数量、颜色主题及图标切换等需求分析。详细讲解了页码列表计算（minPage/maxPage）的核心逻辑，提供了 Props、Computed 和 Methods 的代码实现，并分享了关于编写独立组件与 API 设计的思考。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=%E5%8A%A8%E6%89%8B%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAvue%E5%88%86%E9%A1%B5%E7%BB%84%E4%BB%B6&description=%E6%9C%AC%E6%96%87%E8%AE%B0%E5%BD%95%E4%BA%86%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA+Vue+%E5%88%86%E9%A1%B5%E7%BB%84%E4%BB%B6%E7%9A%84%E5%85%A8%E8%BF%87%E7%A8%8B%EF%BC%8C%E6%B6%B5%E7%9B%96%E8%87%AA%E5%AE%9A%E4%B9%89%E9%A1%B5%E7%A0%81%E6%95%B0%E9%87%8F%E3%80%81%E9%A2%9C%E8%89%B2%E4%B8%BB%E9%A2%98%E5%8F%8A%E5%9B%BE%E6%A0%87%E5%88%87%E6%8D%A2%E7%AD%89%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90%E3%80%82%E8%AF%A6%E7%BB%86%E8%AE%B2%E8%A7%A3%E4%BA%86%E9%A1%B5%E7%A0%81%E5%88%97%E8%A1%A8%E8%AE%A1%E7%AE%97%EF%BC%88minPage%2FmaxPage%EF%BC%89%E7%9A%84%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91%EF%BC%8C%E6%8F%90%E4%BE%9B%E4%BA%86+Props%E3%80%81Computed+%E5%92%8C+Methods+%E7%9A%84%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%EF%BC%8C%E5%B9%B6%E5%88%86%E4%BA%AB%E4%BA%86%E5%85%B3%E4%BA%8E%E7%BC%96%E5%86%99%E7%8B%AC%E7%AB%8B%E7%BB%84%E4%BB%B6%E4%B8%8E+API+%E8%AE%BE%E8%AE%A1%E7%9A%84%E6%80%9D%E8%80%83%E3%80%82" alt="动手实现一个vue分页组件"></p><pre><code class="language-ts">console.log(&#39;A&#39;);
+</code></pre>
+<pre><code class="language-ts">console.log(&#39;B&#39;);
+</code></pre>
+<h2>需求分析</h2>
+<ul>
+<li>自定义显示的页码按钮的数量</li>
+<li>自定义分页组件的颜色主题</li>
+<li>可以选择显示文本内容或者图标来进行翻页操作</li>
+</ul>
+<h2>实现</h2>
+<ol>
+<li>分页组件需要显示的页码按钮数量，可以通过pagesToDisplay()这个计算属性定义</li>
+<li>颜色主题可以通过绑定一个<code>paginationClass</code>的class，返回颜色<code>type</code>实现</li>
+<li>文本或图标的选择可以通过嵌套条件判断template实现</li>
+</ol>
+<h2>分页原理</h2>
+<p>实现分页主要依靠这两个参数，total(总条目数)，perPage(每页显示的条目数量)。后端可以通过这两个参数，返回相应的数据给前端。
+整个分页组件中，相对来说比较麻烦的地方在于<strong>页码列表的显示逻辑</strong>。页码列表是一个返回[最小页码, 最大页码]的数组。进而，问题被切分为如何求解页码列表数组中页码值的最大值和最小值。这里定义两个计算属性maxPage()，minPage()来返回页码数组中页码值的最大值，和最小值。</p>
+<h2>页面组件</h2>
+<pre><code class="language-html">&lt;template&gt;
+  &lt;ul class=&quot;pagination&quot; :class=&quot;paginationClass&quot;&gt;
+    &lt;!-- 前一页 --&gt;
+    &lt;li
+      class=&quot;page-item prev-page&quot;
+      :class=&quot;{ disabled: value === 1,&#39;no-arrows&#39;: noArrows }&quot;
+    &gt;
+      &lt;a class=&quot;page-link&quot; arial-label=&quot;Previous&quot; @click=&quot;prevPage&quot;&gt;
+      &lt;!-- 是否有文本 --&gt;
+        &lt;template v-if=&quot;withText&quot;&gt;
+          perv
+        &lt;/template&gt;
+      &lt;!-- 箭头图标 --&gt;
+        &lt;i class=&quot;arrow-left&quot; v-else&gt;&lt;/i&gt;
+      &lt;/a&gt;
+    &lt;/li&gt;
+    &lt;!-- 当前显示的分页列表 --&gt;
+    &lt;li
+      class=&quot;page-item&quot;
+      v-for=&quot;item in range(minPage, maxPage)&quot;
+      :key=&quot;item&quot;
+      :class=&quot;{active: value === item}&quot;
+    &gt;
+      &lt;a class=&quot;page-link&quot; @click=&quot;changePage(item)&quot;&gt;{{item}}&lt;/a&gt;
+    &lt;/li&gt;
+    &lt;!-- 后一页 --&gt;
+    &lt;li
+      class=&quot;paga-item next-page&quot;
+      :class=&quot;{disabled: value === totalPage, &#39;no-arrows&#39;: noArrows}&quot; 
+    &gt;
+      &lt;a class=&quot;page-link&quot; arial-label=&quot;Next&quot; @click=&quot;nextPage&quot;&gt;
+      &lt;!-- 文本内容 --&gt;
+        &lt;template v-if=&quot;withText&quot;&gt;
+          Next
+        &lt;/template&gt;
+        &lt;i class=&quot;arrow-right&quot; v-else&gt;&lt;/i&gt;
+      &lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/template&gt;
+</code></pre>
+<h2>props</h2>
+<pre><code class="language-js">props: {
+  // 颜色主题
+  type: {
+    type: String,
+    default: &quot;primary&quot;,
+    // 验证`type`的值
+    validator: value =&gt; {
+      return [
+        &quot;default&quot;,
+        &quot;primary&quot;,
+        &quot;info&quot;,
+        &quot;success&quot;,
+        &quot;danger&quot;
+      ].includes(value);
+    }
+  },
+  // 是否带有文本内容
+  withText: Boolean,
+  // 箭头图标
+  noArrows: Boolean,
+  // 页码数
+  pageCount: {
+    type: Number,
+    default: 0
+  },
+  // 每页显示的项数
+  perPage: {
+    type: Number,
+    default: 0
+  },
+  // 总项数
+  total: {
+    type: Number,
+    default: 0
+  },
+  // 当前页码的值
+  value: {
+    type: Number,
+    default: 1
+  }
+}
+</code></pre>
+<h2>data</h2>
+<pre><code class="language-js">data: {
+  // 页码列表中显示的页码数量
+  defaultPagesToDisplay: 5
+}
+</code></pre>
+<h2>computed</h2>
+<pre><code class="language-js">computed: {
+  // 颜色主题
+  paginationClass() {
+    return `pagination-${this.type}`
+  },
+  // 总页码数
+  toatalPages() {
+    if (this.pageCount &gt; 0) return this.pageCount;
+    if (this.total &gt; 0 ) {
+      return Math.ceil(this.total / this.perPage);
+    }
+  },
+  // 显示的页码按钮数量
+  pagesToDisplay() {
+    if (this.totalPages &gt; 0 &amp;&amp; this.totalPages &lt; this.defaultPagesToDisplay) {
+      return this.totalPages;
+    } else {
+      return this.defaultPagesToDisplay;
+    }
+  },
+  // 页码列表中最小的页码数
+  minPage() {
+    if (this.value &gt;= this.pagesToDisplay) {
+      // 定义一个偏移量
+      const pagesToAdd = Math.floor(this.pagesToDisplay / 2);
+      // 假定的最大页码数 = 当前页码值 + 偏移量
+      const newMaxPage = this.value + pagesToAdd;
+      if (newMaxPage &gt; this.totalPages) {
+        return totalPages - this.pagesToDisplay + 1;
+      } else {
+        // 当前页码值始位处于页码列表的中间位置
+        return this.value - pagesToAdd;
+      }
+    } else {
+      // 当前页码值小于默认页码列表按钮数量时，最小页码数返回1
+      return 1;
+    }
+  },
+  // 页码列表中最大的页码数
+  maxPage() {
+    if (this.value &gt;= this.pagesToDisplay) {
+      const pagesToAdd = Math.floor(this.pagesToDisplay / 2);
+      const newMaxPage = this.value + pagesToAdd;
+      if (newMaxPage &lt; this.totalPages) {
+        return newMaxPage;
+      } else {
+        return totalPages;
+      }
+    } else {
+      // 当前页码值小于默认页码列表按钮数量时，最大页码数返回显示的页码列表按钮数
+      return this.pageToDisplay;
+    }
+  }
+}
+</code></pre>
+<h2>methods</h2>
+<pre><code class="language-js">methods: {
+  // 页码列表数组
+  range(min, max) {
+    let arr =[];
+    for (let i = min; i &lt;= max; i++) {
+      arr.push(i);
+    }
+    return arr;
+  },
+  // 跳转页码
+  changePage(item) {
+    this.$emit(&quot;input&quot;, item);
+  },
+  // 下一页
+  nextPage() {
+    if (this.value &lt; this.totalPages) {
+      this.$emit(&quot;input&quot;, this.value + 1);
+    }
+  },
+  // 上一页
+  prevPage() {
+    if (this.value &gt; 1) {
+      this.$emit(&quot;input&quot;, this.value - 1);
+    }
+  }
+}
+</code></pre>
+<h2>最后</h2>
+<p>想要不断提高自己的技术水平，就不能只满足于写<strong>业务组件</strong>。在写像分页这种<strong>独立组件</strong>的过程中，也让我思考<code>API的设计</code>，以及<code>功能复杂性</code>的问题。无论是多么复杂的组件，大体上都是由prop，event，slot三部分组成。具体的实现，主要还是依靠基础的javascript的能力。
+此前，我也仿照element写了radio和input组件。希望自己能坚持去写这些独立组件，去发现更大的世界。本文的分页组件<a href="https://github.com/occupy5/my-vue-components/blob/master/src/components/MyPagination.vue">源码</a>在这儿。</p>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Week in Mar 12, 2023]]></title>
+        <id>https://wangjb.appinn.me/posts/weekly_101</id>
+        <link href="https://wangjb.appinn.me/posts/weekly_101"/>
+        <updated>2023-03-12T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[一周回顾：常用 AI 工具推荐，LLM 生成原理深度解析（RLHF、概率分布），以及从 Embeddings 到独立开发者的机会思考。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=Week+in+Mar+12%2C+2023&description=%E4%B8%80%E5%91%A8%E5%9B%9E%E9%A1%BE%EF%BC%9A%E5%B8%B8%E7%94%A8+AI+%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90%EF%BC%8CLLM+%E7%94%9F%E6%88%90%E5%8E%9F%E7%90%86%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%EF%BC%88RLHF%E3%80%81%E6%A6%82%E7%8E%87%E5%88%86%E5%B8%83%EF%BC%89%EF%BC%8C%E4%BB%A5%E5%8F%8A%E4%BB%8E+Embeddings+%E5%88%B0%E7%8B%AC%E7%AB%8B%E5%BC%80%E5%8F%91%E8%80%85%E7%9A%84%E6%9C%BA%E4%BC%9A%E6%80%9D%E8%80%83%E3%80%82" alt="Week in Mar 12, 2023"></p><p>这一周的主题是 ChatGPT 相关的内容。3月初，OpenAI 开放了 ChatGPT 的接口。这两周以来各种相关的应用如雨后春笋般冒出来。</p>
+<p>其中的一些产品已经成为我每天必用。同时我也在思考如何利用这些工具来提升我的学习和工作效率。尤其是在用 chatPDF 看文章或者论文时，不停地提出问题，会让我的注意力更加集中。</p>
+<h2>使用过的产品</h2>
+<ul>
+<li><a href="https://www.chatpdf.com/">chatPDF</a></li>
+<li><a href="https://www.typingmind.com/">typingMind</a></li>
+<li><a href="https://github.com/yetone/openai-translator">openai-translator</a></li>
+<li><a href="https://www.roomgpt.io/">roomGPT</a></li>
+<li><a href="https://github.com/mckaywrigley/paul-graham-gpt">paul-graham-gpt</a></li>
+</ul>
+<h2>看的文章</h2>
+<ul>
+<li><a href="https://www.jonstokes.com/p/chatgpt-explained-a-guide-for-normies">chatgpt-explained-a-guide-for-normies</a></li>
+</ul>
+<p>前段时间在做一个 <a href="https://learnprompting.org/docs/intro">prompt engineering</a> 的翻译。看完这篇文章终于明白了为什么需要使用 prompt 来控制 ChatGPT 的输出结果。</p>
+<blockquote>
+<p>原理
+<code>A generative model is a function that can take a structured collection of symbols as input and produce a related structured collection of symbols as output</code></p>
+</blockquote>
+<blockquote>
+<p>确定性（Deterministic） VS  随机性（stochastic）</p>
+</blockquote>
+<blockquote>
+<p>关联关系（Relationship matters）</p>
+</blockquote>
+<ul>
+<li>符号关系之间的多样性和复杂性</li>
+<li>潜在空间 -&gt; 可能输出结果的多维空间</li>
+</ul>
+<blockquote>
+<p>概率分布（Probability distributions）</p>
+</blockquote>
+<ul>
+<li>哪些方法可以改变 LLM 模型的概率分布<ul>
+<li>训练（training）</li>
+<li>微调（Fine-tuning）</li>
+<li>人类反馈的强化学习（RLHF）</li>
+</ul>
+</li>
+</ul>
+<h2>一些思考</h2>
+<h3>学习到的技术</h3>
+<ul>
+<li>paul-graham-gpt<ul>
+<li>使用 embedding 来实现文本搜索 =&gt; 使用 cosSim 来计算相似度</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-ts">export const cosSim = (A: number[], B: number[] ) =&gt;
+    {
+        let dotproduct = 0
+        let MA = 0
+        let MB = 0
+        for (let I i &lt; A.length; i++) {
+            dotproduct += A[i] * B[i]
+            MA += A[i] * A[i]
+            MB += B[i] * B[i]
+        }
+        MA = Math.sqrt(mA)
+        MB = Math.sqrt(mB)
+        const similarity = dotproduct / (MA * MB)
+        return similarity
+    }
+</code></pre>
+<ul>
+<li>openai-translator<ul>
+<li>使用 tauri 将 web 应用打包成桌面 APP</li>
+</ul>
+</li>
+</ul>
+<h3>独立开发者的机会</h3>
+<ul>
+<li>typingmind 的开发者在<a href="https://twitter.com/tdinh_me/status/1634842333643698177">一周之内收益</a> $20000</li>
+</ul>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Week in April 16, 2023]]></title>
+        <id>https://wangjb.appinn.me/posts/weekly_103</id>
+        <link href="https://wangjb.appinn.me/posts/weekly_103"/>
+        <updated>2023-04-16T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[一周回顾：Chakra UI 与 React 技术文章阅读，Web3 与 AI 新品观察；结合《打造超人大脑》与《思考快与慢》两本书，深度反思学习方法与 AI 辅助阅读的边界。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=Week+in+April+16%2C+2023&description=%E4%B8%80%E5%91%A8%E5%9B%9E%E9%A1%BE%EF%BC%9AChakra+UI+%E4%B8%8E+React+%E6%8A%80%E6%9C%AF%E6%96%87%E7%AB%A0%E9%98%85%E8%AF%BB%EF%BC%8CWeb3+%E4%B8%8E+AI+%E6%96%B0%E5%93%81%E8%A7%82%E5%AF%9F%EF%BC%9B%E7%BB%93%E5%90%88%E3%80%8A%E6%89%93%E9%80%A0%E8%B6%85%E4%BA%BA%E5%A4%A7%E8%84%91%E3%80%8B%E4%B8%8E%E3%80%8A%E6%80%9D%E8%80%83%E5%BF%AB%E4%B8%8E%E6%85%A2%E3%80%8B%E4%B8%A4%E6%9C%AC%E4%B9%A6%EF%BC%8C%E6%B7%B1%E5%BA%A6%E5%8F%8D%E6%80%9D%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E4%B8%8E+AI+%E8%BE%85%E5%8A%A9%E9%98%85%E8%AF%BB%E7%9A%84%E8%BE%B9%E7%95%8C%E3%80%82" alt="Week in April 16, 2023"></p><h2>读的文章</h2>
+<ul>
+<li><a href="https://www.adebayosegun.com/blog/the-future-of-chakra-ui">The future of Chakra UI</a></li>
+<li><a href="https://www.developerway.com/posts/how-to-handle-errors-in-react">How to handle errors in React</a></li>
+</ul>
+<h2>产品</h2>
+<h3>web3</h3>
+<p><a href="https://docs.ramper.xyz/">ramper</a>
+<a href="https://particle.network/">particle</a></p>
+<h3>AI</h3>
+<ul>
+<li><a href="https://segment-anything.com/">segment anything</a></li>
+</ul>
+<h2>看的书</h2>
+<ul>
+<li>《打造超人大脑》</li>
+<li>《思考快与慢》</li>
+</ul>
+<h2>一些思考</h2>
+<p>从看的两本书，来聊一下最近的一些思考。</p>
+<p>《打造超人大脑》主要讲了三个主题，『输入』，『输出』，『持续进化』。看这本书的过程中，对于各个部分作者提出的一些方法，其实对我来讲都不算特别新鲜。更多的思考则是自己对过去学习的一些反思。无论是对于编程还是写作，感觉自己还是停留在『新手区』。</p>
+<p>对于『输入』部分，日常我会通过 RSS 和公众号的订阅，以及 Twitter 和即刻上关注的一些『大牛』发的推文或者写的博客来完成。并且我会定期整理 Twitter 上的 likes，以及把看到的优质文章剪切到语雀——方便回顾。有的时候也会看一些文章提到的书。这部分我认为我做的还不错，因为总能发现一些高质量的文章以及第一手的行业资讯。</p>
+<p>对于《输出》部分，显然我做的有很多不足。方式目前是通过写博客，发推文来完成。问题主要出现在拖延症，以及写文章效率太低。这本书里面讲了一些『轻松写作』和『持续写作』的方法。想要跳出新手区，这部分是我最需要提升的地方。</p>
+<p>『持续进化』这个部分，书里面提到了『如何对写作上瘾』，『跨界学习』，『从零开始快速学会一门新的领域』。我认为这个部分是对于前两个部分能力的体现，更多的是一种选择。</p>
+<p>《思考快与慢》这本书实际上很早就已经看过了。几年前我在 MOOC 上学习一门《日常思考与科学》的课程，里面很多的一些引用实例就是来源于这本书。书中有大量的例子来解释我们在生活中是如何做出<strong>判断和决策</strong>。</p>
+<p>很多经典的书还是要反复的读，对于读书也要运用一些第一本书中提到的如何『输出』的方法。还有就是我也在思考如何借助 AI 工具提升效率，所谓的『第二大脑』。但是目前来讲，如果只看 AI 总结后的内容，就如同不去读书只是去看读后感一样，不过是假装让我们看起来很聪明而已。</p>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Week in Jun 04, 2023]]></title>
+        <id>https://wangjb.appinn.me/posts/weekly_104</id>
+        <link href="https://wangjb.appinn.me/posts/weekly_104"/>
+        <updated>2023-06-04T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[本周回顾了英超收官与连绵雨季。技术方面尝试了 Databerry、yt-fts 等工具，并利用 Gamma 辅助完成了黑客松项目；播客中聆听了尤雨溪关于 Vue 成功的思考，同时开始阅读迟子建的《额尔古纳河右岸》。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=Week+in+Jun+04%2C+2023&description=%E6%9C%AC%E5%91%A8%E5%9B%9E%E9%A1%BE%E4%BA%86%E8%8B%B1%E8%B6%85%E6%94%B6%E5%AE%98%E4%B8%8E%E8%BF%9E%E7%BB%B5%E9%9B%A8%E5%AD%A3%E3%80%82%E6%8A%80%E6%9C%AF%E6%96%B9%E9%9D%A2%E5%B0%9D%E8%AF%95%E4%BA%86+Databerry%E3%80%81yt-fts+%E7%AD%89%E5%B7%A5%E5%85%B7%EF%BC%8C%E5%B9%B6%E5%88%A9%E7%94%A8+Gamma+%E8%BE%85%E5%8A%A9%E5%AE%8C%E6%88%90%E4%BA%86%E9%BB%91%E5%AE%A2%E6%9D%BE%E9%A1%B9%E7%9B%AE%EF%BC%9B%E6%92%AD%E5%AE%A2%E4%B8%AD%E8%81%86%E5%90%AC%E4%BA%86%E5%B0%A4%E9%9B%A8%E6%BA%AA%E5%85%B3%E4%BA%8E+Vue+%E6%88%90%E5%8A%9F%E7%9A%84%E6%80%9D%E8%80%83%EF%BC%8C%E5%90%8C%E6%97%B6%E5%BC%80%E5%A7%8B%E9%98%85%E8%AF%BB%E8%BF%9F%E5%AD%90%E5%BB%BA%E7%9A%84%E3%80%8A%E9%A2%9D%E5%B0%94%E5%8F%A4%E7%BA%B3%E6%B2%B3%E5%8F%B3%E5%B2%B8%E3%80%8B%E3%80%82" alt="Week in Jun 04, 2023"></p><p>阴雨天已经连绵了差不多两周的时间，这个夏天的雨季感觉比往年都要来的更早一些。上周末，本赛季的英超比赛也已经踢完了。曼城提前两轮便锁定了英超冠军，最后的收官之战早已悬念不再。</p>
+<p>回顾一下本周做的一些事情：</p>
+<h2>工具</h2>
+<ul>
+<li><a href="https://app.databerry.ai/agents">databerry</a></li>
+<li><a href="https://gamma.app/">gamma</a></li>
+<li><a href="https://github.com/NotJoeMartinez/yt-fts">yt-fts</a></li>
+</ul>
+<p>最近在考虑如何动手实现一个可以训练自定义数据的 Bot，原理就是使用 <strong>OpenAI</strong> 的 API，<strong>LangchainJS</strong> 以及<strong>向量数据库</strong>来完成。Databerry 是个无代码的平台支持使用自定义数据来实现 ChatGPT Agent，总体使用体验还不错。但是免费版的限制太多了，还没来得及深度体验，额度几乎已经用完了。</p>
+<p>上一周还参加了一个黑客松比赛，终于做了一把「全栈」开发——前端 + 智能合约 + PPT + 视频几乎都是由我一个人完成。其中 PPT 部分使用了 gamma 来做辅助。节省了我很多的时间，只需要把项目中 README 作为大纲丢到 gamma 中，它就能帮我完成 PPT 大体的框架。而且还有许多超棒的样式可以选择，想要修改布局也很方便。</p>
+<p>yt-fts 是一个可以全文搜索 Youtube 频道中字幕的命令行工具。原理就是使用 <code>yt-dlp</code> 先下载该频道下所有视频的 subtitles 然后将其存到 <code>sqlite</code> 数据库中进行全文检索。最新的版本还支持使用 <code>OpenAI embedings</code> 来语义检索。</p>
+<h2>听的播客</h2>
+<ul>
+<li><a href="https://www.xiaoyuzhoufm.com/episode/6475d2ec53a5e5ea147934aa">代码之外第二期</a></li>
+</ul>
+<p>这期播客请来了尤雨溪作为嘉宾。确实没有想到尤大的歌能唱的这么好听😂，听完了这期播客，我还特意去听了几遍方大同的《春风吹》。这期并没有聊具体的技术。而是分享了自己在新加坡的生活以及如何做决策等等。印象比较深刻的对话是——当谈到 Vue 成功的原因时，他说「可能技术和他水平相当或是超过自己的人有很多，但是他的不同是更能了解用户的需求」。还有就是时机，那个时候<strong>前端工程化</strong>才刚刚起步。</p>
+<h2>看的书</h2>
+<ul>
+<li>《额尔古纳河右岸》—— 迟子建</li>
+</ul>
+<p>这本书描绘了鄂温克族百年的沧桑和生存现状。鄂温克族人世代居住的土地上，有与他们日夜相伴的驯鹿、树木、河流、月亮和清风。作者的文笔非常优美，记得在高中时期就经常在文本理解中遇到她的作品。</p>
+<p>目前我只读完了第一章节，更多的感受就放在接下来的文章中谈吧。</p>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Week in Aug 20, 2023]]></title>
+        <id>https://wangjb.appinn.me/posts/weekly_106</id>
+        <link href="https://wangjb.appinn.me/posts/weekly_106"/>
+        <updated>2023-08-20T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[一周回顾：《置身事内》读书笔记与阅读工具分享，Unlock Protocol 的 NFT 门票系统解析，AI Agent 播客听后感，以及窦靖童新专辑推荐。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=Week+in+Aug+20%2C+2023&description=%E4%B8%80%E5%91%A8%E5%9B%9E%E9%A1%BE%EF%BC%9A%E3%80%8A%E7%BD%AE%E8%BA%AB%E4%BA%8B%E5%86%85%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E4%B8%8E%E9%98%85%E8%AF%BB%E5%B7%A5%E5%85%B7%E5%88%86%E4%BA%AB%EF%BC%8CUnlock+Protocol+%E7%9A%84+NFT+%E9%97%A8%E7%A5%A8%E7%B3%BB%E7%BB%9F%E8%A7%A3%E6%9E%90%EF%BC%8CAI+Agent+%E6%92%AD%E5%AE%A2%E5%90%AC%E5%90%8E%E6%84%9F%EF%BC%8C%E4%BB%A5%E5%8F%8A%E7%AA%A6%E9%9D%96%E7%AB%A5%E6%96%B0%E4%B8%93%E8%BE%91%E6%8E%A8%E8%8D%90%E3%80%82" alt="Week in Aug 20, 2023"></p><h2>读书</h2>
+<p>这段时间主要看了，《把自己作为方法》、《置身事内》和《额尔古纳河右岸》这三本书。关于读书的方法也有一些感悟——「没有必要强迫自己在特定的时间内把一本书读完」。对于读书，随机阅读可能会比做任务的方式给我带来更大的收获。</p>
+<p>这是我今天在读《置身事内》这本书时做的摘录，内容还挺有意思。</p>
+<blockquote>
+<p>很多语言（如英语）是有时态的，因此在讲到“过去”“现在”“未来”时，语法要改变，会让人产生一种“疏离感”，未来跟现在不是一回事，何必担心未来，活在当下就好。因此说这种语言的人储蓄率较低。很多语言（如汉语和德语）没有时态，“往日之我”“今日之我”“明日之我”绵延不断，因此人们储蓄率也较高。</p>
+</blockquote>
+<p>之前通常是在 kindle 上读书，但是导出笔记比较麻烦。现在我已经迁移到了微信读书，配合 obsidian 的<a href="https://github.com/zhaohongxuan/obsidian-weread-plugin">这个插件</a>，导出笔记非常方便。并且微信读书也支持多端阅读。</p>
+<h2>文章</h2>
+<ul>
+<li><p><a href="https://unlock-protocol.com/blog/ethcc5-2022-ticketing">Ticketing with Unlock Protocol at EthCC 2022</a></p>
+</li>
+<li><p><a href="https://lutaonan.com/blog/my-extension-sold-1k-yuan/">开发一个浏览器插件在第三天卖出 1000 元</a></p>
+</li>
+</ul>
+<p>这篇文章是关于 unlock 协议在 Ethcc 2022 的具体实践。</p>
+<ul>
+<li>如何设计 NFT 门票系统<ol>
+<li>考虑参会者不同的角色</li>
+<li>如何快速验证门票的有效性</li>
+</ol>
+</li>
+<li>解决的问题<ol>
+<li>阻止机器人购买</li>
+<li>不可转让的 NFT 门票，防止黄牛炒作</li>
+<li>会场内门票验证，确保门票真实性</li>
+</ol>
+</li>
+</ul>
+<h2>播客</h2>
+<ul>
+<li><p><a href="https://www.xiaoyuzhoufm.com/episode/64dd55ea307ade09ca2af40d">AI Agent 智能体 真相和未来</a></p>
+</li>
+<li><p><a href="https://open.spotify.com/episode/1vgCShroN2BP3aoLM5TRZ2?si=349fc507fe5742cf">Chillchat</a></p>
+</li>
+<li><p><a href="https://www.xiaoyuzhoufm.com/episode/64d9e9fd80c9ec4c5f394813">第五集|代码之外</a></p>
+</li>
+</ul>
+<p>这期关于 AI 的播客讨论了很多我感兴趣的话题，例如「AI 在游戏方面的创新进展」、「软件的世界会被怎样的改变」以及「开源的 LLama 2 如何刺激大模型创新」等。</p>
+<p>Chillchat 是一对中外异地情侣探讨如何学习中文的播客。话题都是一些生活日常，从逆向思维角度，对于我学习英文也是很有帮助的。比如在这个播客中，经常会给出一些中文词汇，让对方说出对应的英文。此时我也在思考应当如何使用英文来表达。</p>
+<h2>音乐</h2>
+<ul>
+<li>《春游》—— 窦靖童</li>
+</ul>
+<p>这张专辑中有好几首歌我都非常喜欢，在反复地听。《河流》、《烟花》、《橘子汽水》都是充满想象力和灵气的歌曲。此外这张专辑也是窦靖童的第一张中文专辑，从这十首歌曲中可以看到她对独立音乐创作的态度和理解。玩音乐，做实验来创造出自己的独属风格。</p>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Week in Feb 22, 2024]]></title>
+        <id>https://wangjb.appinn.me/posts/weekly_107</id>
+        <link href="https://wangjb.appinn.me/posts/weekly_107"/>
+        <updated>2024-02-22T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[本周阅读了王小波的《黄金时代》与福楼拜的《包法利夫人》，感受直率的性描写与精雕细琢的人物刻画；分享了三段来自播客的读者来信，记录了那些朦胧、遗憾却美好的情感瞬间。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=Week+in+Feb+22%2C+2024&description=%E6%9C%AC%E5%91%A8%E9%98%85%E8%AF%BB%E4%BA%86%E7%8E%8B%E5%B0%8F%E6%B3%A2%E7%9A%84%E3%80%8A%E9%BB%84%E9%87%91%E6%97%B6%E4%BB%A3%E3%80%8B%E4%B8%8E%E7%A6%8F%E6%A5%BC%E6%8B%9C%E7%9A%84%E3%80%8A%E5%8C%85%E6%B3%95%E5%88%A9%E5%A4%AB%E4%BA%BA%E3%80%8B%EF%BC%8C%E6%84%9F%E5%8F%97%E7%9B%B4%E7%8E%87%E7%9A%84%E6%80%A7%E6%8F%8F%E5%86%99%E4%B8%8E%E7%B2%BE%E9%9B%95%E7%BB%86%E7%90%A2%E7%9A%84%E4%BA%BA%E7%89%A9%E5%88%BB%E7%94%BB%EF%BC%9B%E5%88%86%E4%BA%AB%E4%BA%86%E4%B8%89%E6%AE%B5%E6%9D%A5%E8%87%AA%E6%92%AD%E5%AE%A2%E7%9A%84%E8%AF%BB%E8%80%85%E6%9D%A5%E4%BF%A1%EF%BC%8C%E8%AE%B0%E5%BD%95%E4%BA%86%E9%82%A3%E4%BA%9B%E6%9C%A6%E8%83%A7%E3%80%81%E9%81%97%E6%86%BE%E5%8D%B4%E7%BE%8E%E5%A5%BD%E7%9A%84%E6%83%85%E6%84%9F%E7%9E%AC%E9%97%B4%E3%80%82" alt="Week in Feb 22, 2024"></p><h2>读书</h2>
+<p>这段时间主要看了两本书，《黄金时代》和《包法利夫人》。</p>
+<p>之前看过王小波的两本书，一本是《沉默的大多数》，另外一本是他和李银河写的《爱你就像爱生命》。他的文字诙谐易懂，读起来毫不费劲。读他的书就像是和一个非常真诚直率幽默的人在聊天。</p>
+<p>这本《黄金时代》我才刚开始读到第一部分，这是王二人生中的少年时代，充斥着非常多直接而坦率关于性的描写。</p>
+<blockquote>
+<p>那一天我二十一岁，在我一生的黄金时代，我有好多奢望。我想爱，想吃，还想在一瞬间变成天上半明半暗的云。</p>
+</blockquote>
+<p>至于《包法利夫人》，令我印象深刻的是作者的语言艺术。太多关于人物精雕细琢的描写了。</p>
+<blockquote>
+<p>而且寡妇瘦括括的，牙又长，整年披一件小黑披肩，尖尖头搭在肩胛骨之间；骨头一把，套上袍子，就像剑入了鞘一样。</p>
+</blockquote>
+<h2>播客</h2>
+<p>下面的几段内容，摘选自我前两天听的播客[^1] 和之前收藏的一期播客[^2]。都是读者的来信，这种还未捅破窗户纸的朦胧情感读起来特别让人着迷。</p>
+<h3>未寄出的月光</h3>
+<blockquote>
+<p>是这样的，他说，还是喊你L吧。不知道为何要提笔写下这封，反正你也看不懂的信。情书对于写情书的人和读情书的人，哪个更重要？何况是我一个中年人要写一份悸动，不知从哪个时刻开始，妳在人群中变得耀眼，想尽回忆也找不到我的萌芽瞬间，但闭上眼睛，辗转反侧的却都是妳。一群人出去玩，妳总是担任导航的角色，所以每次坐扶梯，妳都站在最上面，而我总是跟在最后边，我赌妳会回头看，于是四目相对，我沦陷在妳的笑眼里。有次在路上发烧了，你搓了搓双手让自己变暖之后才轻扶我的额头，</p>
+<p>每次聚餐你都坐在我旁边，还一口气吃完了我炒的贼辣的土豆丝。某次我鞠躬为你把我送回家表示感谢，你说日本人才会这么做，我说这是我们大中华礼仪之邦的最高谢意，于是两个人在地铁上开始互拜。无法加入闲聊的我在踩地上的枯叶，你问我在干什么，我说杀死一片枯叶，于是你也成了帮凶，还有什么猫，书，宫崎骏，恐流，三岛，再没什么了。毕竟我们只相处了两周而已，去年看了一部电影《过往人生》，从男主和女主恢复联系的那一刻起，我就期盼着一场久别重逢的亲吻，一场酣畅淋漓的性爱，总要发生点什么来献祭这样的感情，但什么都没有发生。这个空白把我搞得无地自容，因为我们之间终究还是发生了一点什么。离别前一晚，两个人的见面，你突如其来的邀请，交换人生碎片，又被每一个碎片吸引。冰激凌在夏夜里融化，空气里有一些甜腻，四点的月亮具有魔力，妖艳又神秘，你意犹未尽的所抱，我伪装平静的绽放，月亮抽出了双眼，秘密和不可告人的秘密。如今，我们在不同的地方仰望月亮，我也明白了一个人可以带着另一个再无联系的人继续生活。</p>
+<p>生命中某个部分彻底改变了，你和夏天永远留在了SG，如果这一生还有机会再见，我也会用空白回应你，同时告诉你，那晚月色有多美，祝你好，比我好，想留在过去的S。</p>
+</blockquote>
+<h3>余光里的你</h3>
+<blockquote>
+<p>你好呀，LMS， 我认识你蛮久了，也在一次一次的偶然相遇中对你产生了一些特别的情意。第一次注意到你是在周老师的英语课堂上，你竞选课代表的发言，你叫LMS啊，好好听的名字。</p>
+<p>当时对你的印象是你讲话很好听，是很清冷的男孩子，给我一种不一样的感觉。也是在这之后，我开始有意无意的关注到你。其实后来才意识到，在这之前，我也见到过你。体育课上，你分发号码符，跑完800米，到我面前问我要号码符。嘿，同学，把号码符给我。我印象里的你，当时是带着一抹笑容的。慢慢地回忆到妳，突然有印象妳参与过年级长竞选。妳一次次不经意地出现，在我信里留下了一次次印记。当时的我认为这种情愫只不过是一时兴起罢了。</p>
+<p>可是后来，和妳见面的频次越来越少，妳的名字在日记本上出现的频次却越来越多。我开始频繁地期望与妳的见面。最近在公交车上遇到了你两次，我真的好激动，好开心，也写了些文字。那天在公交车上遇到他了，他像极了他，他像极了我印象中的他，自己着迷的他。后来，有很多时刻回味那天早晨。他在我斜前方的椅子上坐着，旁边女生的头恰好挡住了我望向他的视线，车一停一晃，模模糊糊地用余光看到他的身影，也不敢明目张胆看着脸。每次遇到之后都懊悔，怎么不多看一眼，还记得自己下车后故意放慢脚步，也等不到他走在我面前，当时只念着慢一点，再慢一点，快一点，快一点，今天也遇到了，快到学校才发现他也在这辆车上，本来已经做好遇不到他的准备了，一路都在吃早餐看风景，到师大地铁站，人走了一半，猛地抬起头望到了他，气质好像他，确认他的脸，看到他就好开心啊。在他后面下车，可是他走好慢，慢到我也这样走就好明显。擦肩到他面前的时候，我真的好拘谨。不管下次他走多慢，我也要跟着他的速度。每一次见面我都好欢喜，会怀念当时的你。我不自觉的心跳加速，都在跟自己反复确认着我对你的心意。</p>
+<p>我笃定这是喜欢，我从来都不是一个足够自信勇敢的人，所以在是否向你表达心意这件事上，真的犹豫了很久很久，我想我就不要打扰到他的生活了吧，可是我真的好不甘心，不甘心还没尝试过就放弃，我想我不要欺骗自己，不要隐瞒这份真实存在的感情，所以我还是想试一下，今天可能有点冒昧了，对不起。</p>
+</blockquote>
+<h3>告白的意义</h3>
+<blockquote>
+<p>我想和你们分享我的初恋的故事，那是我单方向的、漫长的迄今唯一一次的喜欢。还是叫他Q吧，毕竟他在我的日记里一直都是这样出场的。</p>
+<p>初中时，我们同校，家离得也不远，所以总搭同一辆公车。是在初二下春夏之交的时候开始关注他的（日记里开始出现他的名字缩写），他的学习成绩很好很好，是重点高中的苗子，而彼时我只是班级中上游的一员。</p>
+<p>但，真正开始对他产生Crush的感觉却是在一瞬间。那是后来暗恋他五年的时间里我反复在笔记本上描述的一幕。那是个下雨天，隐隐约约传来春雷的声音，香樟树被雨水洗得发亮，空气里弥漫着樟树的冷香。我坐在公车后排，一眼扫到了路边等车的他。他撑着一把普通得再普通不过的蓝色格子伞，依旧低着头，背着他那塞满书的黑色书包，蓝色格纹衬衫，站在一棵香樟树下。我其实一直都没怎么看清过他的模样（一方面是因为那时候近视了，但我觉得戴眼镜不好看，所以不看书的时候都是不戴眼镜的，另一方面是因为我不敢直视他，即便在他和我聊天的时候，我都不敢把目光放在他的脸上太久，害怕会被他发现、会被别人发现自己的喜欢）。那时候我开始发了疯似的拼命做题，甚至低血糖昏倒在家里，我想和他考上同一所高中。我也开始偷偷写诗，写关于那天树下的那个少年，写雨水，写樟树，写我自己，写少年不知方向的未来。我还是每天看着车窗外的行道树发呆，但耳朵里装着的却不再只有风声。他的咳嗽声，他的脚步声，他的笑声……全部被我收藏。很快就是中考。但我还是没有告诉他那句“我喜欢你”。好在那个夏天里我收到了和他一样的录取通知书，那时候我以为我们还有机会常见面，可是没有。</p>
+<p>高中学业繁忙，我在物理小球和磁场中晕头转向，在自卑的漩涡里原地打转。月考的成绩栏里他在前五十，而我却在四五百名徘徊。我依旧和初中一样，偷偷在每天的早操、放学的人群中寻找着他，却再没主动走上前和他说过一句话。两年，又过去了，直到高三，我才在一次聊天中第一次向我的好朋友聊起他，聊起日记本里描述过的一个个细小的有关他的瞬间。</p>
+<p>这也许是因为我自己也清楚地知道能再见他的时日所剩无多了吧。“去告白吧，你很好看，又有才华，这么好，没必要自卑的！”（好朋友这么说我是因为我当时写的诗和写的小说获得了很多人的肯定，其它的是因为有滤镜存在哈哈哈哈。）犹犹豫豫，最后带着好朋友一起走到他的班级门口，可心跳得太厉害，说话也开始结巴，于是落荒而逃，躲在走廊拐角，扔给好朋友一封信，托她交给他。她以为那信里写的是告白，其实只有“好久不见”和“高考顺利”以及祝他“万事胜意”。其实，在那个时候，我就已经在和他告别了吧。你们是不是以为故事就在这里结束了啊，又或者有了一个大反转类似他也暗恋我或者我告白了最后在一起了啊哈哈哈哈哈，没有，都没有。</p>
+<p>我自己为这场暗恋画了一个完美的句号，但句号那个时间超搞笑，是在大一清明节假期的晚上。那天晚上，我和好朋友躺在床上看恐怖片，看完快凌晨了还是睡不着，又开始聊起了他。也许是多巴胺上头了，或者是看恐怖片看得不清醒了，没多想就编辑了一大段文字发给了Q，完成了我预谋过三番两次的告白。是我变勇敢变自信了吗，也不是，只是我明白了告白的意义。不在乎结果，只是向他说明自己蛰伏多年的心意，终于能在一个凌晨，这样一个春天的夜晚，像记忆里的香樟树一样，在春天落下枯叶，迎来新叶。那一晚我并没有做梦，我睡得很安稳。睁开眼睛打开手机，没有意外，我被拒绝了。但他的回复很温柔，他感谢我对他的喜欢，他也确实不清楚我对他的心意。我们开始聊起过去，聊起现在。他祝我也能万事胜意。这样的告白就是我能给我自己最好的结局。我很感谢他的出现，让我慢慢变得更好，但我也很心疼暗恋里的自己，那些酸楚，那些眼泪，只有自己知道。但所幸，留下了那些雀跃时光，留下了那些文字，留下了那个香樟树下躲雨的少年，留下了如今这个坚韧又敏感的我。</p>
+</blockquote>
+<p>[^1]: <a href="https://www.xiaoyuzhoufm.com/episode/65caa4254ca142334a58efbe">Vol.217 情人节特辑：爱是最小单位的共产主义</a>
+[^2]: <a href="https://www.xiaoyuzhoufm.com/episode/6208bcf3c92d78ea7a472711">58 哎呀，爱呀，比花儿还美妙</a></p>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Week in Mar 29, 2024]]></title>
+        <id>https://wangjb.appinn.me/posts/weekly_108</id>
+        <link href="https://wangjb.appinn.me/posts/weekly_108"/>
+        <updated>2024-03-29T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[一周回顾：财报分析与东京生活随笔阅读，AI 叙事逻辑与多巴胺机制的深度思考，以及前端自动化、Vue 生态等技术资源分享。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=Week+in+Mar+29%2C+2024&description=%E4%B8%80%E5%91%A8%E5%9B%9E%E9%A1%BE%EF%BC%9A%E8%B4%A2%E6%8A%A5%E5%88%86%E6%9E%90%E4%B8%8E%E4%B8%9C%E4%BA%AC%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%E9%98%85%E8%AF%BB%EF%BC%8CAI+%E5%8F%99%E4%BA%8B%E9%80%BB%E8%BE%91%E4%B8%8E%E5%A4%9A%E5%B7%B4%E8%83%BA%E6%9C%BA%E5%88%B6%E7%9A%84%E6%B7%B1%E5%BA%A6%E6%80%9D%E8%80%83%EF%BC%8C%E4%BB%A5%E5%8F%8A%E5%89%8D%E7%AB%AF%E8%87%AA%E5%8A%A8%E5%8C%96%E3%80%81Vue+%E7%94%9F%E6%80%81%E7%AD%89%E6%8A%80%E6%9C%AF%E8%B5%84%E6%BA%90%E5%88%86%E4%BA%AB%E3%80%82" alt="Week in Mar 29, 2024"></p><h2>读书</h2>
+<ul>
+<li>《一本书读懂财报》</li>
+<li>《东京八平米》</li>
+</ul>
+<p>阅读财会书籍的起因，是近期正值财报季，我在关注一些个股，希望对公司财报有更深层次的理解。得益于本科期间修过经济类课程的交叉学科背景，读起来并不费劲。整体而言，这本书通俗易懂，书中的比喻尤为精彩：它将「资产负债表」比作企业的“照相机”，定格的是某个时点的财务状况；而将「利润表」比作企业的“摄像机”，记录的则是某个时段的经营成果。</p>
+<p>「八平米」是作者在东京暂住地的空间尺度，也是她生活的小宇宙。八平米很小，东京却很大。在小空间与大都市的张力之间，作者记录的虽是日常琐事，却充满温度，令人感同身受。这让我想起之前读过的《一个人的小繁华》——两本书的作者都是独自在东京打拼的女性，也都擅长在平凡的生活缝隙中，寻找属于自己的小确幸。</p>
+<h2>播客</h2>
+<ul>
+<li><a href="https://www.xiaoyuzhoufm.com/episode/65e34a65da891a9cd9bf90f2">英伟达、Sora 与 AI 的三种核心叙事逻辑 | 对谈莫傑麟</a></li>
+<li><a href="https://www.xiaoyuzhoufm.com/episode/65d5f02b513a776b5787fd0f">我们是情绪的主人，还是奴隶？和北大脑科学博士聊聊情绪与激素</a></li>
+</ul>
+<p>这是一期非常精彩的 AI 播客。嘉宾们从应用探索、投资创业、竞争维度等多个视角，深入探讨了 AI 2.0 时代的特点与未来。其中最令我印象深刻的是，嘉宾用「球球大作战」这款游戏来类比创业公司与巨头在该领域的竞争关系，非常形象且耐人寻味。</p>
+<p>这期内容干货满满，探讨了「多巴胺的奖赏机制」与「成瘾行为」的本质。核心观点在于：多巴胺编码的并非简单的“快乐”，而是“预期与现实之间的差值”。听完这期播客，我终于从脑科学的角度理解了那个心理学常识——「为什么降低预期往往能获得幸福」。</p>
+<h2>看的文章</h2>
+<ul>
+<li><a href="https://salt-nlp.github.io/Design2Code/">How Far Are We From Automating Front-End Engineering</a></li>
+<li><a href="https://talks.antfu.me/2024/vue-amsterdam/1">Vue Amsterdam</a></li>
+<li><a href="https://prin.pw/react-unstable-nested-components/">真的不可以在 React 组件里嵌套定义子组件吗</a></li>
+</ul>
+<h2>工具</h2>
+<ul>
+<li><a href="https://github.com/dubinc/dub">dub</a></li>
+<li><a href="https://github.com/formkit/auto-animate">auto-animate</a></li>
+</ul>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Week in June 08, 2024]]></title>
+        <id>https://wangjb.appinn.me/posts/weekly_109</id>
+        <link href="https://wangjb.appinn.me/posts/weekly_109"/>
+        <updated>2024-06-08T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[本周回顾：尝试 Web3 + AI 创作，发布了两个解决实际问题的 MyShell Bot；关注 Telegram Mini App 生态发展；重读浏览器原理并思考如何做好技术面试官。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=Week+in+June+08%2C+2024&description=%E6%9C%AC%E5%91%A8%E5%9B%9E%E9%A1%BE%EF%BC%9A%E5%B0%9D%E8%AF%95+Web3+%2B+AI+%E5%88%9B%E4%BD%9C%EF%BC%8C%E5%8F%91%E5%B8%83%E4%BA%86%E4%B8%A4%E4%B8%AA%E8%A7%A3%E5%86%B3%E5%AE%9E%E9%99%85%E9%97%AE%E9%A2%98%E7%9A%84+MyShell+Bot%EF%BC%9B%E5%85%B3%E6%B3%A8+Telegram+Mini+App+%E7%94%9F%E6%80%81%E5%8F%91%E5%B1%95%EF%BC%9B%E9%87%8D%E8%AF%BB%E6%B5%8F%E8%A7%88%E5%99%A8%E5%8E%9F%E7%90%86%E5%B9%B6%E6%80%9D%E8%80%83%E5%A6%82%E4%BD%95%E5%81%9A%E5%A5%BD%E6%8A%80%E6%9C%AF%E9%9D%A2%E8%AF%95%E5%AE%98%E3%80%82" alt="Week in June 08, 2024"></p><p>距离上一次写 blog 已经过去了两个多月之久。这段时间琐事很多，终于趁假期有时间对过去两个月做过的事情做下回顾。</p>
+<h2>MyShell</h2>
+<p>MyShell 是一个 Web3 + AI 的创作平台。最近我在上面创建了两个 Bot，初衷都是为了解决现实生活中的具体需求。</p>
+<p>第一个是美食博主 <a href="https://www.youtube.com/@BlondieinChina">Amy</a>的数字分身。我很喜欢在 YouTube 或 B 站看 Amy 的美食 Vlog，她的视频多以中国美食为主题。我认为通过「谈论美食与文化」来练习英语口语，是一个非常有趣的切入点。</p>
+<p>第二个是 Zoe Chinese，这是一个利用 Pro Config 配置的中文学习工具，主要提供语法分析及 HSK 备考模拟。这个想法源于我之前加入的一个 Discord 语言交换群组，我发现群里有很多中文初学者都在为 HSK 考试而苦恼，于是便有了这个工具。</p>
+<ul>
+<li><a href="https://app.myshell.ai/bot/NZvmEr/1712738674">Amy in China</a></li>
+<li><a href="https://app.myshell.ai/bot/uqEvia/1714033383">Zoe Chinese</a></li>
+</ul>
+<h2>Ton</h2>
+<p>在去年的年度总结中，我提到了一篇文章 —— <a href="https://www.theblockbeats.info/news/44789">社交和加密，Telegram 的下个十年</a>。最近的这段时间 Ton 生态开始爆发，各大媒体以及开发者们也开始关注其生态系统，一些项目也推出了适配 Ton 生态的应用 —— TMA (Telegram Mini APP)。</p>
+<ul>
+<li><a href="https://github.com/telegram-mini-apps-dev/awesome-telegram-mini-apps">awesome-telegram-mini-apps</a></li>
+</ul>
+<h2>阅读</h2>
+<p>这段时间有相当一部分时间花在面试候选人。想要打造一个高效并且充满活力的技术团队，核心就是团队成员的组成。「如何在海量的简历中找到适合团队的候选人」的确不是个简单的问题，「出的面试题是否能够考察出候选人的真实能力」，「如何控制好面试流程使得过程更加高效」都是我在面试中遇到的问题。</p>
+<p>结合《浏览器工作原理与实践》这本小册，最近把<a href="https://developer.chrome.com/blog/inside-browser-part1">Inside look at modern web browser</a>这个系列的文章重新看了一遍。</p>
+<ul>
+<li><a href="https://time.geekbang.org/column/intro/403">技术面试官识人手册</a></li>
+<li><a href="https://time.geekbang.org/column/intro/100033601">浏览器工作原理与实践</a></li>
+</ul>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[浏览器工作原理]]></title>
+        <id>https://wangjb.appinn.me/posts/weekly_110</id>
+        <link href="https://wangjb.appinn.me/posts/weekly_110"/>
+        <updated>2024-10-07T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[深入解析现代浏览器的工作原理，从 Chrome 的多进程架构切入，详细拆解浏览器进程与渲染进程的核心职责，揭示从代码到可视网页背后的渲染机制与安全设计。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=%E6%B5%8F%E8%A7%88%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86&description=%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90%E7%8E%B0%E4%BB%A3%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%EF%BC%8C%E4%BB%8E+Chrome+%E7%9A%84%E5%A4%9A%E8%BF%9B%E7%A8%8B%E6%9E%B6%E6%9E%84%E5%88%87%E5%85%A5%EF%BC%8C%E8%AF%A6%E7%BB%86%E6%8B%86%E8%A7%A3%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%9B%E7%A8%8B%E4%B8%8E%E6%B8%B2%E6%9F%93%E8%BF%9B%E7%A8%8B%E7%9A%84%E6%A0%B8%E5%BF%83%E8%81%8C%E8%B4%A3%EF%BC%8C%E6%8F%AD%E7%A4%BA%E4%BB%8E%E4%BB%A3%E7%A0%81%E5%88%B0%E5%8F%AF%E8%A7%86%E7%BD%91%E9%A1%B5%E8%83%8C%E5%90%8E%E7%9A%84%E6%B8%B2%E6%9F%93%E6%9C%BA%E5%88%B6%E4%B8%8E%E5%AE%89%E5%85%A8%E8%AE%BE%E8%AE%A1%E3%80%82" alt="浏览器工作原理"></p><h2>从几个问题开始</h2>
+<ul>
+<li>用户在地址栏输入 URL 后，浏览器导航到网页的流程是怎样的</li>
+<li>渲染器进程的核心工作是什么？它如何将 HTML、CSS 和 JavaScript 转化为可视网页</li>
+<li>作为一名 Web 开发者，有哪些工具和实践可以帮助我优化网页性能</li>
+</ul>
+<h2>多进程架构</h2>
+<blockquote>
+<p>操作系统之上的操作系统</p>
+</blockquote>
+<pre><code class="language-mermaid">graph LR
+    subgraph Chrome_Browser [&quot;Chrome Browser&quot;]
+        direction LR
+        
+        subgraph Browser_Process [&quot;Browser Process&quot;]
+            UIThread[UI Thread]
+            Network[Network]
+            Storage[Storage]
+        end
+        
+        subgraph Renderer_Process [&quot;Renderer Process&quot;]
+            MainThread[Main Thread]
+            WorkerThreads[Worker Threads]
+            CompositorThread[Compositor Thread]
+            RasterizerThread[Rasterizer Thread]
+        end
+        
+        subgraph GPU_Process [&quot;GPU Process&quot;]
+            GPUThread[GPU Thread]
+        end
+
+        subgraph Plugin_Process [&quot;Plugin Process&quot;]
+            PluginThreads[Plugin Threads]
+        end
+
+        subgraph Extension_Process [&quot;Extension Process&quot;]
+            ExtensionThreads[Extension Threads]
+        end
+        
+        subgraph Utility_Process [&quot;Utility Process&quot;]
+            UtilityTasks[Various Utility Tasks]
+        end
+    end
+</code></pre>
+<h3>各个进程的作用</h3>
+<h4>浏览器进程</h4>
+<ul>
+<li><strong>核心协调者</strong>：浏览器进程是应用程序的“指挥中心”，负责协调其他进程，处理标签页以外的所有浏览器事务。</li>
+<li><strong>用户界面 (UI) 控制</strong>：它控制浏览器应用程序的“Chrome”部分，包括地址栏、书签以及前进和后退按钮。其中的 <em>UI 线程</em> 负责绘制这些浏览器按钮和输入字段</li>
+<li><strong>网络请求处理</strong>：浏览器进程中的 <em>网络线程</em> 专门负责与网络堆栈交互，从互联网接收数据，处理 DNS 查询、建立 TLS 连接等协议，并处理服务器重定向。它还会执行 SafeBrowsing 检查以防止用户访问恶意站点，以及跨域读取阻塞 (CORB) 检查以保护敏感的跨站点数据。</li>
+<li><strong>文件和存储访问</strong>：它处理浏览器中“不可见、特权”的部分，例如文件访问，由其内部的 <em>存储线程</em> 负责</li>
+<li><strong>导航流程管理</strong>：从用户在地址栏输入 URL 到页面开始渲染，整个导航流程由<strong>浏览器进程</strong>协调。它会寻找或启动一个<strong>渲染器进程</strong>来渲染网页，并通过 IPC (进程间通信) 提交导航</li>
+<li><strong>Service Worker 识别</strong>：当导航请求传入时，<em>网络线程</em>会检查请求的域名是否与已注册的 Service Worker 作用域匹配。如果匹配，UI 线程会启动一个<strong>渲染器进程</strong>来执行 Service Worker 代码</li>
+<li>输入事件处理：用户手势（如触摸或鼠标点击）首先由<strong>浏览器进程</strong>接收。由于标签页内的内容由<strong>渲染器进程</strong>处理，浏览器进程会将事件类型和坐标发送给<strong>渲染器进程</strong></li>
+</ul>
+<h4>渲染进程</h4>
+<ul>
+<li><strong>网页内容显示</strong>：渲染器进程控制着标签页内显示网站内容的全部区域</li>
+<li><strong>核心渲染工作</strong>：其核心任务是将 HTML、CSS 和 JavaScript 转换为用户可以交互的网页。这包括解析 HTML 构建 DOM、解析 CSS 计算样式、执行布局以确定元素的几何形状、生成绘制记录以及将页面分层并进行合成</li>
+<li><strong>主线程</strong>：渲染器进程的主线程处理大部分发送给用户的代码，包括 HTML 解析、样式计算、布局、生成绘制记录以及 JavaScript 执行</li>
+<li><strong>工作线程</strong>：如果使用了 Web Worker 或 Service Worker，部分 JavaScript 代码会由渲染器进程中的 <em>工作线程</em> 处理</li>
+<li><strong>合成器线程和栅格线程</strong>：为了高效平滑地渲染页面，渲染器进程内部还运行着 <em>合成器线程</em> (Compositor thread) 和 <em>栅格线程</em> (Raster threads)。<em>合成器线程</em>负责将页面分成层，<em>栅格线程</em>将这些层分解成图块并栅格化存储到 GPU 内存中，合成器线程再将它们合成一个帧</li>
+<li><strong>Service Worker 执行</strong>：Service Worker 是运行在渲染器进程中的 JavaScript 代码</li>
+</ul>
+<h4>GPU 进程</h4>
+<ul>
+<li><strong>处理 GPU</strong> 任务：它独立于其他进程处理 GPU 任务。将其分离为单独的进程是因为 GPU 会处理来自多个应用程序的请求并在同一表面上绘制它们。最终的合成器帧会发送到 GPU 进行显示</li>
+</ul>
+<h4>插件进程</h4>
+<ul>
+<li><strong>控制插件</strong>：它控制网站使用的任何插件，例如 Flash</li>
+</ul>
+<h4>其他进程</h4>
+<ul>
+<li><strong>扩展进程</strong> (Extension Process)：处理浏览器扩展程序的功能</li>
+<li><strong>实用工具进程</strong> (Utility Processes)：处理其他各种辅助任务</li>
+</ul>
+<h3>多进程架构的好处</h3>
+<ul>
+<li><p><strong>提高稳定性</strong>：如果一个标签页变得无响应，只会影响该标签页所在的渲染器进程，而不会导致整个浏览器崩溃或所有标签页都无响应</p>
+</li>
+<li><p><strong>增强安全性和沙盒化</strong>：操作系统提供了限制进程权限的机制，浏览器可以对渲染器进程等处理用户输入的进程进行沙盒化，限制它们对文件等特定功能的访问，从而提高了整体安全性。站点隔离 (Site Isolation) 功能进一步增强了安全性，它为每个跨站 iframe 运行一个独立的渲染器进程，是分离站点的最有效方式</p>
+</li>
+<li><p><strong>服务化</strong> (Servicification)：Chrome 正在将浏览器程序的各个部分作为服务运行。在强大硬件上，每个服务可以拆分为不同的进程以提供更高的稳定性；在资源受限设备上，这些服务可以整合到一个进程中以节省内存占用</p>
+</li>
+</ul>
+<h2>相关文章</h2>
+<ul>
+<li><a href="https://developer.chrome.com/blog/inside-browser-part1">Inside look at modern web browser</a></li>
+</ul>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Week in Oct 28, 2024]]></title>
+        <id>https://wangjb.appinn.me/posts/weekly_111</id>
+        <link href="https://wangjb.appinn.me/posts/weekly_111"/>
+        <updated>2024-10-28T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[本周重温了宁浩的《无人区》，在纪录片《他乡的童年》中思考芬兰与日本的教育差异；游戏推荐富有想象力的《星之卡比》，并分享了 MindSearch、MemFree 等 AI 相关的开源项目。]]></summary>
+        <content type="html"><![CDATA[<p><img src="https://wangjb.appinn.me/api/og?title=Week+in+Oct+28%2C+2024&description=%E6%9C%AC%E5%91%A8%E9%87%8D%E6%B8%A9%E4%BA%86%E5%AE%81%E6%B5%A9%E7%9A%84%E3%80%8A%E6%97%A0%E4%BA%BA%E5%8C%BA%E3%80%8B%EF%BC%8C%E5%9C%A8%E7%BA%AA%E5%BD%95%E7%89%87%E3%80%8A%E4%BB%96%E4%B9%A1%E7%9A%84%E7%AB%A5%E5%B9%B4%E3%80%8B%E4%B8%AD%E6%80%9D%E8%80%83%E8%8A%AC%E5%85%B0%E4%B8%8E%E6%97%A5%E6%9C%AC%E7%9A%84%E6%95%99%E8%82%B2%E5%B7%AE%E5%BC%82%EF%BC%9B%E6%B8%B8%E6%88%8F%E6%8E%A8%E8%8D%90%E5%AF%8C%E6%9C%89%E6%83%B3%E8%B1%A1%E5%8A%9B%E7%9A%84%E3%80%8A%E6%98%9F%E4%B9%8B%E5%8D%A1%E6%AF%94%E3%80%8B%EF%BC%8C%E5%B9%B6%E5%88%86%E4%BA%AB%E4%BA%86+MindSearch%E3%80%81MemFree+%E7%AD%89+AI+%E7%9B%B8%E5%85%B3%E7%9A%84%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E3%80%82" alt="Week in Oct 28, 2024"></p><h2>影音</h2>
+<ul>
+<li>《无人区》</li>
+<li>《他乡的童年》</li>
+</ul>
+<p>因为实在提不起看新电影的兴致，索性把《无人区》又重温了一遍。依稀记得上次看这部片子，还是在大二的某个午后。黄渤饰演的鹰贩子被傻子当头一锤、瞬间「领盒饭」的那一幕，充满了宁浩标志性的黑色幽默，也是整部电影里最令我难忘的画面之一。</p>
+<p>我很着迷于这种荒诞感，宁浩早期的《疯狂的石头》和《疯狂的赛车》也深得其味。不过，自从在电影院看完《疯狂的外星人》后，那种惊艳感似乎就断了档，我也就再没看过他的其他作品了。</p>
+<p>《他乡的童年》则是一部探讨不同文化背景下教育理念的纪录片，导演试图去回答「什么是好的教育」。我重点看了芬兰和日本篇：芬兰教育强调平等与自由，致力于呵护孩子的创造力；而日本则更侧重集体主义和纪律性。作为一个足球迷，我不由得联想到日本足球以严丝合缝的战术执行和团队协作著称——这或许与球员们从小接受的教育有着千丝万缕的联系。</p>
+<h2>游戏</h2>
+<ul>
+<li>《星之卡比——探索发现》</li>
+</ul>
+<p>一款极具想象力且易上手的游戏，双人合作模式也非常有趣，很适合闲暇时光。</p>
+<h2>APP</h2>
+<ul>
+<li>Miraa</li>
+<li>Follow</li>
+</ul>
+<h2>Dev</h2>
+<ul>
+<li><a href="https://github.com/InternLM/MindSearch">mindsearch</a></li>
+<li><a href="https://github.com/ManimCommunity/manim">manim</a></li>
+<li><a href="https://github.com/anthropics/anthropic-quickstarts/tree/main/financial-data-analyst">financial assistant</a></li>
+<li><a href="https://github.com/memfreeme/memfree">memfree</a><ul>
+<li>mdreader</li>
+<li>mindmap</li>
+</ul>
+</li>
+</ul>
+]]></content>
+        <author>
+            <name>Silas</name>
+            <uri>https://wangjb.appinn.me</uri>
+        </author>
+    </entry>
+</feed>

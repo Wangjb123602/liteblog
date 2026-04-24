@@ -1,0 +1,17 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/(home)/layout,_N_T_/(home)/tags/layout,_N_T_/(home)/tags/[...slug]/layout,_N_T_/(home)/tags/[...slug]/page,_N_T_/tags/%E6%B2%B9%E7%8C%B4/1"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/!KGhvbWUp/tags/$c$slug/__PAGE__",
+    "/!KGhvbWUp/tags/$c$slug",
+    "/!KGhvbWUp/tags",
+    "/!KGhvbWUp",
+    "/_index",
+    "/_head"
+  ]
+}

@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://wangjb.appinn.me
+
+# Sitemaps
+Sitemap: https://wangjb.appinn.me/sitemap.xml
